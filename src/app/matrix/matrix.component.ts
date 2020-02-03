@@ -20,4 +20,9 @@ export class MatrixComponent implements OnChanges {
       }
     }
   }
+  color(value: number) {
+    const hue = Math.floor((360 / this.temperament.value * value) % 360);
+    const hslString = 'hsl(' + hue + ', 100%, 75%)';
+    return {backgroundColor: hslString};
+  }
 }

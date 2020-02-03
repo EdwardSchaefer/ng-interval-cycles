@@ -1,5 +1,5 @@
 <div class="row" *ngFor="let row of matrix">
-  <div class="interval" *ngFor="let interval of row">
+  <div [ngStyle]="color(interval.value)" class="interval" *ngFor="let interval of row">
     {{interval.value}}
   </div>
 </div>
