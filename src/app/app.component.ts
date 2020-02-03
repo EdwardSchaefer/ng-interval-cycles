@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {Temperament} from './temperaments-model';
+import {Temperament} from './temperament-model';
 
 @Component({
   selector: 'nic-root',
