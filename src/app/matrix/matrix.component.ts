@@ -1,6 +1,7 @@
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {Temperament} from '../temperament-model';
 import {Interval} from '../interval-model';
+import {SynthService} from '../synth.service';
 
 @Component({
   selector: 'nic-matrix',
@@ -10,13 +11,14 @@ import {Interval} from '../interval-model';
 export class MatrixComponent implements OnChanges {
   @Input() temperament: Temperament;
   matrix: Interval[][] = [];
-  constructor() { }
+  constructor(public synth: SynthService) {}
   ngOnChanges() {
     this.matrix = [];
     for (let i = 0; i <= this.temperament.value; i++) {
       this.matrix.push([]);
       for (let j = 0; j <= this.temperament.value; j++) {
-        this.matrix[i].push(new Interval((i * j) % this.temperament.value));
+        const value = (i * j) % this.temperament.value;
+        this.matrix[i].push(new Interval(this.temperament.value, value));
       }
     }
   }
@@ -24,5 +26,11 @@ export class MatrixComponent implements OnChanges {
     const hue = Math.floor((360 / this.temperament.value * value) % 360);
     const hslString = 'hsl(' + hue + ', 100%, 75%)';
     return {backgroundColor: hslString};
+  }
+  play(interval: Interval) {
+    this.synth.setFrequency(interval.frequency);
+  }
+  stop() {
+    this.synth.stop();
   }
 }

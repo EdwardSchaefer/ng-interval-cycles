@@ -8,4 +8,5 @@
   text-align: center;
   display: inline-block;
   line-height: 3;
+  user-select: none;
 }

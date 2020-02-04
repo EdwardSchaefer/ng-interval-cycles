@@ -1,5 +1,8 @@
 <div class="row" *ngFor="let row of matrix">
-  <div [ngStyle]="color(interval.value)" class="interval" *ngFor="let interval of row">
+  <div *ngFor="let interval of row" class="interval" [ngStyle]="color(interval.value)"
+       (mousedown)="play(interval)"
+       (mouseup)="stop()"
+       (mouseleave)="stop()">
     {{interval.value}}
   </div>
 </div>
