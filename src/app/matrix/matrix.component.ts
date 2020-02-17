@@ -2,7 +2,6 @@ import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {Temperament} from '../temperament-model';
 import {Interval} from '../interval-model';
 import {SynthService} from '../synth.service';
-import {SourceNode} from '../source-node-model';
 
 @Component({
   selector: 'nic-matrix',
@@ -15,7 +14,6 @@ export class MatrixComponent implements OnChanges {
   constructor(public synth: SynthService) {}
   ngOnChanges() {
     this.matrix = [];
-    this.synth.addSourceNodes(this.temperament.value);
     for (let i = 0; i <= this.temperament.value; i++) {
       this.matrix.push([]);
       for (let j = 0; j <= this.temperament.value; j++) {
