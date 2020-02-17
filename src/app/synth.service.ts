@@ -19,15 +19,14 @@ export class SynthService {
     if (!this.initialized) {
       this.initialize();
     }
-    // this.sourceNodes[interval.value].play(this.context);
     this.osc = this.context.createOscillator();
-    this.osc.type = 'square';
+    this.osc.type = 'sine';
     this.osc.frequency.value = interval.frequency;
     this.gain = this.context.createGain();
     this.analyser = this.context.createAnalyser();
     this.gain.connect(this.analyser);
     this.analyser.connect(this.context.destination);
-    this.gain.gain.value = 50;
+    this.gain.gain.value = 1;
     this.osc.connect(this.gain);
     this.osc.start();
   }
