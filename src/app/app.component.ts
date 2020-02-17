@@ -8,8 +8,6 @@ import {SynthService} from './synth.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  initialized: boolean;
-  title = 'ng-interval-cycles';
   min = 3;
   max = 24;
   temps: Temperament[] = [];
@@ -19,15 +17,5 @@ export class AppComponent {
       this.temps.push(new Temperament(i));
     }
     this.selectedTemp = this.temps[9];
-  }
-  initialize() {
-    if (!this.initialized) {
-      this.synth.initialize();
-      this.initialized = true;
-    }
-  }
-  @HostListener('document:mousedown')
-  play() {
-    this.initialize();
   }
 }
