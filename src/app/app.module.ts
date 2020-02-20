@@ -6,12 +6,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatSelectModule} from '@angular/material';
 import { MatrixComponent } from './matrix/matrix.component';
 import { WaveformComponent } from './waveform/waveform.component';
+import { CircleComponent } from './circle/circle.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MatrixComponent,
-    WaveformComponent
+    WaveformComponent,
+    CircleComponent
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Interval} from './interval-model';
+import {Subject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ export class SynthService {
   osc: OscillatorNode;
   gain: GainNode;
   analyser: AnalyserNode;
+  interval: Subject<Interval> = new Subject<Interval | null>();
   constructor() {}
   initialize() {
     this.context = new AudioContext();
@@ -19,6 +21,7 @@ export class SynthService {
     if (!this.initialized) {
       this.initialize();
     }
+    this.interval.next(interval);
     this.osc = this.context.createOscillator();
     this.osc.type = 'sine';
     this.osc.frequency.value = interval.frequency;
@@ -33,6 +36,7 @@ export class SynthService {
   stop(interval: Interval) {
     if (this.initialized) {
       if (this.gain && this.osc) {
+        this.interval.next(null);
         this.gain.disconnect();
         this.osc.stop();
         this.osc.disconnect();
