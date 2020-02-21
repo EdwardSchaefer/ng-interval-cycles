@@ -1,4 +1,4 @@
-import {Component, HostListener} from '@angular/core';
+import {Component} from '@angular/core';
 import {Temperament} from './temperament-model';
 import {SynthService} from './synth.service';
 

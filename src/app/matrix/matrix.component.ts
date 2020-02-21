@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit} from '@angular/core';
+import {Component, HostListener, Input, OnChanges, OnInit} from '@angular/core';
 import {Temperament} from '../temperament-model';
 import {Interval} from '../interval-model';
 import {SynthService} from '../synth.service';
@@ -11,6 +11,23 @@ import {SynthService} from '../synth.service';
 export class MatrixComponent implements OnChanges {
   @Input() temperament: Temperament;
   matrix: Interval[][] = [];
+  defaultKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'q', 'w'];
+  @HostListener('document: keydown', ['$event'])
+  keyPlay(event) {
+    const index = this.defaultKeys.indexOf(event.key);
+    if (index >= 0) {
+      const interval = this.matrix[1][index];
+      this.play(interval);
+    }
+  }
+  @HostListener('document: keyup', ['$event'])
+  keyStop(event) {
+    const index = this.defaultKeys.indexOf(event.key);
+    if (index >= 0) {
+      const interval = this.matrix[1][index];
+      this.stop(interval);
+    }
+  }
   constructor(public synth: SynthService) {}
   ngOnChanges() {
     this.matrix = [];
