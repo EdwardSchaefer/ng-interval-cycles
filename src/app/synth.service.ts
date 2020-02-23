@@ -8,39 +8,28 @@ import {Subject} from 'rxjs';
 export class SynthService {
   initialized: boolean;
   context: AudioContext;
-  osc: OscillatorNode;
-  gain: GainNode;
   analyser: AnalyserNode;
   interval: Subject<Interval> = new Subject<Interval | null>();
   constructor() {}
   initialize() {
     this.context = new AudioContext();
+    this.analyser = this.context.createAnalyser();
+    this.analyser.connect(this.context.destination);
     this.initialized = true;
   }
-  play(interval: Interval) {
+  play(interval: Interval): OscillatorNode {
     if (!this.initialized) {
       this.initialize();
     }
     this.interval.next(interval);
-    this.osc = this.context.createOscillator();
-    this.osc.type = 'sine';
-    this.osc.frequency.value = interval.frequency;
-    this.gain = this.context.createGain();
-    this.analyser = this.context.createAnalyser();
-    this.gain.connect(this.analyser);
-    this.analyser.connect(this.context.destination);
-    this.gain.gain.value = 1;
-    this.osc.connect(this.gain);
-    this.osc.start();
-  }
-  stop(interval: Interval) {
-    if (this.initialized) {
-      if (this.gain && this.osc) {
-        this.interval.next(null);
-        this.gain.disconnect();
-        this.osc.stop();
-        this.osc.disconnect();
-      }
-    }
+    const osc: OscillatorNode = this.context.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = interval.frequency;
+    const gain: GainNode = this.context.createGain();
+    gain.connect(this.analyser);
+    gain.gain.value = 1;
+    osc.connect(gain);
+    osc.start();
+    return osc;
   }
 }

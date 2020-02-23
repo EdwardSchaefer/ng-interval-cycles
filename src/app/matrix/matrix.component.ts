@@ -11,13 +11,15 @@ import {SynthService} from '../synth.service';
 export class MatrixComponent implements OnChanges {
   @Input() temperament: Temperament;
   matrix: Interval[][] = [];
+  osc: OscillatorNode[] = [];
   defaultKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'q', 'w'];
   @HostListener('document: keydown', ['$event'])
   keyPlay(event) {
     const index = this.defaultKeys.indexOf(event.key);
     if (index >= 0) {
       const interval = this.matrix[1][index];
-      this.play(interval);
+      const osc = this.synth.play(interval);
+      this.osc.push(osc);
     }
   }
   @HostListener('document: keyup', ['$event'])
@@ -44,10 +46,18 @@ export class MatrixComponent implements OnChanges {
     const hslString = 'hsl(' + hue + ', 100%, 75%)';
     return {backgroundColor: hslString};
   }
-  play(interval: Interval) {
-    this.synth.play(interval);
+  clickPlay(interval: Interval) {
+    const osc = this.synth.play(interval);
+    this.osc.push(osc);
   }
   stop(interval: Interval) {
-    this.synth.stop(interval);
+    if (this.osc.length) {
+      this.osc.forEach(osc => {
+        osc.stop();
+        osc.disconnect();
+        this.synth.interval.next(null);
+      });
+      this.osc = [];
+    }
   }
 }
