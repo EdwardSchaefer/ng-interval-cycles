@@ -32,4 +32,8 @@ export class SynthService {
     osc.start();
     return osc;
   }
+  stop(osc: OscillatorNode) {
+    osc.disconnect();
+    osc.stop();
+  }
 }
