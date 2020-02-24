@@ -4,6 +4,7 @@ import {Interval} from '../interval-model';
 import {SynthService} from '../synth.service';
 import {fromEvent} from 'rxjs';
 import {take} from 'rxjs/operators';
+import {OscGain} from '../osc-gain-interface';
 
 @Component({
   selector: 'nic-matrix',
@@ -13,7 +14,7 @@ import {take} from 'rxjs/operators';
 export class MatrixComponent implements OnChanges {
   @Input() temperament: Temperament;
   matrix: Interval[][] = [];
-  clickOsc: OscillatorNode;
+  clickOsc: OscGain;
   defaultKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'q', 'w'];
   downKeys: string[] = [];
   @HostListener('document: keydown', ['$event'])

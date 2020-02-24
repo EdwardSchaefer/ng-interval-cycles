@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Interval} from './interval-model';
 import {Subject} from 'rxjs';
+import {OscGain} from './osc-gain-interface';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class SynthService {
     this.analyser.connect(this.context.destination);
     this.initialized = true;
   }
-  play(interval: Interval): OscillatorNode {
+  play(interval: Interval): OscGain {
     if (!this.initialized) {
       this.initialize();
     }
@@ -30,10 +31,11 @@ export class SynthService {
     gain.gain.value = 1;
     osc.connect(gain);
     osc.start();
-    return osc;
+    return {osc, gain};
   }
-  stop(osc: OscillatorNode) {
-    osc.disconnect();
-    osc.stop();
+  stop(oscGain: OscGain) {
+    oscGain.gain.disconnect();
+    oscGain.osc.disconnect();
+    oscGain.osc.stop();
   }
 }
