@@ -7,18 +7,22 @@ import {MatSelectModule} from '@angular/material';
 import { MatrixComponent } from './matrix/matrix.component';
 import { WaveformComponent } from './waveform/waveform.component';
 import { CircleComponent } from './circle/circle.component';
+import { EnvelopeComponent } from './envelope/envelope.component';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
     AppComponent,
     MatrixComponent,
     WaveformComponent,
-    CircleComponent
+    CircleComponent,
+    EnvelopeComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    MatSelectModule
+    MatSelectModule,
+    DragDropModule
   ],
   providers: [],
   bootstrap: [AppComponent]
