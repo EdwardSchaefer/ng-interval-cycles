@@ -1,7 +1,15 @@
 <div>
   <svg class="svg-container" [attr.width]="width" [attr.height]="height">
     <path [attr.d]="envelope.path" stroke="black" fill="transparent"></path>
-    <circle *ngFor="let handle of envelope.handles" (cdkDragMoved)="update($event, handle)" cdkDrag cdkDragBoundary=".svg-container"
-            [attr.cx]="handle.initX" [attr.cy]="handle.initY" [attr.r]="handle.radius" fill="black"></circle>
+    <circle *ngFor="let handle of envelope.handles"
+            cdkDrag
+            (cdkDragMoved)="update($event, handle)"
+            [attr.cx]="handle.initX"
+            [attr.cy]="handle.initY"
+            [attr.r]="handle.radius"
+            [attr.fill]="handle.fill"
+            [cdkDragLockAxis]="handle.lockAxis"
+            [cdkDragBoundary]="handle.dragBoundary">
+    </circle>
   </svg>
 </div>

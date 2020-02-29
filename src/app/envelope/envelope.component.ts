@@ -7,11 +7,11 @@ import {Component} from '@angular/core';
 })
 export class EnvelopeComponent {
   envelope: Envelope;
-  lineCount = 4;
+  nodeCount = 7;
   height = 200;
-  width = this.height * this.lineCount;
+  width = this.height * this.nodeCount / 2;
   constructor() {
-    this.envelope = new Envelope(4);
+    this.envelope = new Envelope(this.nodeCount);
   }
   update(event, handle: Handle) {
     handle.cx = event.event.offsetX;
@@ -21,35 +21,47 @@ export class EnvelopeComponent {
 
 class Envelope {
   handles: Handle[] = [];
-  constructor(lines: number) {
-    const handleCount = lines * 2;
-    this.handles.push(new Handle(0));
-    for (let i = 0; i < handleCount; i++) {
-      this.handles.push(new Handle(i + 1));
+  constructor(nodes: number) {
+    for (let i = 0; i < nodes; i++) {
+      this.handles.push(new Handle(i));
     }
   }
   get path(): string {
-    let result = 'M 0 0 ';
-    this.handles.forEach(handle => {
-      result = result + 'H ' + handle.cx + ' V ' + handle.cy + ' ';
+    let result = '';
+    this.handles.forEach((handle, index) => {
+      if (!index) {
+        result = result + 'M ' + handle.cx + ' ' + handle.cy + ' ';
+      }
+      if (index % 2) {
+        result = result + 'Q ' + handle.cx + ' ' + handle.cy + ' ';
+      } else {
+        result = result + handle.cx + ' ' + handle.cy + ' ';
+      }
+
     });
-    return result + 'Z';
+    return result;
   }
 }
 
-
 class Handle {
-  radius = 10;
+  radius: number;
+  fill: string;
   index: number;
   initX: number;
   initY: number;
   cx: number;
   cy: number;
+  lockAxis: string;
+  dragBoundary: string;
   constructor(i: number) {
     this.index = i;
     this.initX = 100 * i;
     this.initY = 100;
     this.cx = 100 * i;
     this.cy = 100;
+    this.radius = i % 2 ? 5 : 10;
+    this.fill = i % 2 ? 'grey' : 'black';
+    this.lockAxis = i % 2 ? '' : 'y';
+    this.dragBoundary = '.svg-container';
   }
 }
