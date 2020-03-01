@@ -14,8 +14,12 @@ export class EnvelopeComponent {
     this.envelope = new Envelope(this.nodeCount);
   }
   update(event, handle: Handle) {
-    handle.cx = event.event.offsetX;
-    handle.cy = event.event.offsetY;
+    const transform: string = event.event.target.style.transform;
+    if (transform) {
+      const coords = transform.substring(12).split(',');
+      handle.cx = parseInt(coords[0].split('px')[0], 10) + handle.initX;
+      handle.cy = parseInt(coords[1].split('px')[0], 10) + handle.initY;
+    }
   }
 }
 
