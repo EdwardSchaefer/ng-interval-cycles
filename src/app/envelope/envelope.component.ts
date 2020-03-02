@@ -39,7 +39,6 @@ class Envelope {
       } else {
         result = result + handle.cx + ' ' + handle.cy + ' ';
       }
-
     });
     return result;
   }
@@ -55,6 +54,8 @@ class Handle {
   cy: number;
   lockAxis: string;
   dragBoundary: string;
+  rectX: number;
+  rectWidth: number;
   constructor(i: number) {
     this.index = i;
     this.initX = 100 * i;
@@ -64,6 +65,8 @@ class Handle {
     this.radius = i % 2 ? 5 : 10;
     this.fill = i % 2 ? 'grey' : 'black';
     this.lockAxis = i % 2 ? '' : 'y';
-    this.dragBoundary = '.svg-container';
+    this.dragBoundary = i % 2 ? '.handle-container' : '.circle-container';
+    this.rectX = i % 2 ? (i * 100) - 100 : 0;
+    this.rectWidth = i % 2 ? 200 : 0;
   }
 }
