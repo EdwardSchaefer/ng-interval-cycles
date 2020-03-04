@@ -42,6 +42,16 @@ class Envelope {
     });
     return result;
   }
+  getCurve(x: number, b: number, c: number, d: number): number {
+    return (b - c + (Math.sqrt((x * b) + (x * d) - (2 * x * c) + Math.pow(c, 2) - (b * d)))) / (b - (2 * c) + d);
+  }
+  getY(t: number, b: number, c: number, d: number): number {
+    return Math.pow((1 - t), 2) * b + 2 * (1 - t) * t * c + Math.pow(t, 2) * d;
+  }
+  getHeight(time: number): number {
+    const curve = this.getCurve(time, this.handles[0].cx, this.handles[1].cx, this.handles[2].cx);
+    return this.getY(curve, this.handles[0].cy, this.handles[1].cy, this.handles[2].cy);
+  }
 }
 
 class Handle {
