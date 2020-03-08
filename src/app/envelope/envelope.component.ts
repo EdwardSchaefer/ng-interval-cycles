@@ -25,20 +25,18 @@ class Envelope {
   handles: Handle[] = [];
   constructor(nodes: number) {
     for (let i = 0; i < nodes; i++) {
-      this.handles.push(new Handle(i));
+      this.handles.push(i % 2 ? new BezierHandle(i) : new VerticalHandle(i));
     }
   }
   get path(): string {
     let result = '';
     this.handles.forEach((handle, index) => {
-      if (!index) {
-        result = result + 'M ' + handle.cx + ' ' + handle.cy + ' ';
+      const coordString = handle.cx + ' ' + handle.cy + ' ';
+      let svgCommand = 'M';
+      if (index) {
+        svgCommand = index % 2 ? 'Q' : '';
       }
-      if (index % 2) {
-        result = result + 'Q ' + handle.cx + ' ' + handle.cy + ' ';
-      } else {
-        result = result + handle.cx + ' ' + handle.cy + ' ';
-      }
+      result = result + svgCommand + coordString;
     });
     return result;
   }
@@ -72,11 +70,29 @@ class Handle {
     this.initY = 100;
     this.cx = 100 * i;
     this.cy = 100;
-    this.radius = i % 2 ? 5 : 10;
-    this.fill = i % 2 ? 'grey' : 'black';
-    this.lockAxis = i % 2 ? '' : 'y';
-    this.dragBoundary = i % 2 ? '.handle-container' : '.circle-container';
-    this.rectX = i % 2 ? (i * 100) - 100 : 0;
-    this.rectWidth = i % 2 ? 200 : 0;
+  }
+}
+
+class VerticalHandle extends Handle {
+  constructor(i: number) {
+    super(i);
+    this.radius = 10;
+    this.fill = 'black';
+    this.lockAxis = 'y';
+    this.dragBoundary = '.circle-container';
+    this.rectX = 0;
+    this.rectWidth = 0;
+  }
+}
+
+class BezierHandle extends Handle {
+  constructor(i: number) {
+    super(i);
+    this.radius = 5;
+    this.fill = 'grey';
+    this.lockAxis = '';
+    this.dragBoundary = '.handle-container';
+    this.rectX = (i * 100) - 100;
+    this.rectWidth = 200;
   }
 }
