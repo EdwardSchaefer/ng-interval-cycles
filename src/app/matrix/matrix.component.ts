@@ -4,7 +4,7 @@ import {Interval} from '../interval-model';
 import {SynthService} from '../synth.service';
 import {fromEvent} from 'rxjs';
 import {take} from 'rxjs/operators';
-import {OscGain} from '../osc-gain-interface';
+import {OscGainController} from '../osc-gain-controller.model';
 
 @Component({
   selector: 'nic-matrix',
@@ -14,7 +14,7 @@ import {OscGain} from '../osc-gain-interface';
 export class MatrixComponent implements OnChanges {
   @Input() temperament: Temperament;
   matrix: Interval[][] = [];
-  clickOsc: OscGain;
+  clickOsc: OscGainController;
   defaultKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'q', 'w'];
   downKeys: string[] = [];
   @HostListener('document: keydown', ['$event'])
@@ -26,7 +26,7 @@ export class MatrixComponent implements OnChanges {
       const osc = this.synth.play(interval);
       const keyup = fromEvent(document, 'keyup').pipe(take(1));
       keyup.subscribe(subscriber => {
-        this.synth.stop(osc);
+        osc.stop();
         this.downKeys = this.downKeys.filter(key => key !== event.key);
       });
     }
@@ -47,7 +47,7 @@ export class MatrixComponent implements OnChanges {
   }
   stop(interval: Interval) {
     if (this.clickOsc) {
-      this.synth.stop(this.clickOsc);
+      this.clickOsc.stop();
       this.synth.interval.next(null);
     }
   }
