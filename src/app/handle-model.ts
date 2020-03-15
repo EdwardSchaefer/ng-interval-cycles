@@ -1,21 +1,24 @@
+import {Vector} from './vector-model';
+
 class Handle {
   radius: number;
   fill: string;
   index: number;
   initX: number;
   initY: number;
-  cx: number;
-  cy: number;
+  coord: Vector;
   lockAxis: string;
   dragBoundary: string;
   rectX: number;
   rectWidth: number;
   constructor(i: number) {
     this.index = i;
-    this.initX = 100 * i;
+    this.initX = 10 + (100 * i);
     this.initY = 100;
-    this.cx = 100 * i;
-    this.cy = 100;
+    this.coord = new Vector(100 * i, 100);
+  }
+  get coordString() {
+    return this.coord.x + ' ' + this.coord.y + ' ';
   }
 }
 
@@ -38,7 +41,7 @@ export class BezierHandle extends Handle {
     this.fill = 'grey';
     this.lockAxis = '';
     this.dragBoundary = '.handle-container';
-    this.rectX = (i * 100) - 100;
+    this.rectX = 10 + ((i * 100) - 100);
     this.rectWidth = 200;
   }
 }
