@@ -13,6 +13,7 @@ export class EnvelopeComponent {
   nodeCount = 7;
   height = 200;
   width = this.height * this.nodeCount / 2;
+  debugX = 0;
   constructor(public synth: SynthService) {
     this.envelope = new Envelope(this.nodeCount, this.height);
   }
@@ -23,6 +24,9 @@ export class EnvelopeComponent {
     handle.coord.y = parseInt(coords[1].split('px')[0], 10) + handle.initY;
     const handles = this.envelope.handles.map(envHandle => new Vector(envHandle.coord.x, envHandle.coord.y));
     this.synth.curve.next(handles);
+  }
+  debug(event) {
+    this.debugX = event.x;
   }
 }
 
@@ -45,5 +49,26 @@ class Envelope {
       result = result + svgCommand + handle.coordString;
     });
     return result;
+  }
+  getV(index: number): Vector {
+    return this.handles[index].coord;
+  }
+  getT(x: number, b: number, c: number, d: number): number {
+    const sqrt = (x * b) + (x * d) - (2 * x * c) + Math.pow(c, 2) - (b * d);
+    const q = (b - c + (Math.sqrt(Math.abs(sqrt))));
+    const r = (b - (2 * c) + d);
+    const result = q / r;
+    if (isNaN(result)) {
+      return 0;
+    } else {
+      return result;
+    }
+  }
+  getY(t: number, b: number, c: number, d: number): number {
+    return Math.pow((1 - t), 2) * b + 2 * (1 - t) * t * c + Math.pow(t, 2) * d;
+  }
+  getH(time: number, start: number): number {
+    const curve = this.getT(time, this.getV(start).x, this.getV(start + 1).x, this.getV(start + 2).x);
+    return this.getY(curve, this.getV(start).y, this.getV(start + 1).y, this.getV(start + 2).y);
   }
 }
