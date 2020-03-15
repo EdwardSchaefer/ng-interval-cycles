@@ -1,4 +1,4 @@
-import {Component, HostListener, Input, OnChanges, OnInit} from '@angular/core';
+import {Component, HostListener, Input, OnChanges} from '@angular/core';
 import {Temperament} from '../temperament-model';
 import {Interval} from '../interval-model';
 import {SynthService} from '../synth.service';
@@ -23,10 +23,10 @@ export class MatrixComponent implements OnChanges {
     if (index >= 0 && !this.downKeys.includes(event.key)) {
       this.downKeys.push(event.key);
       const interval = this.matrix[1][index];
-      const osc = this.synth.play(interval);
+      const oscGain = this.synth.play(interval);
       const keyup = fromEvent(document, 'keyup').pipe(take(1));
       keyup.subscribe(subscriber => {
-        osc.stop();
+        oscGain.releaseNote();
         this.downKeys = this.downKeys.filter(key => key !== event.key);
       });
     }
@@ -47,7 +47,7 @@ export class MatrixComponent implements OnChanges {
   }
   stop(interval: Interval) {
     if (this.clickOsc) {
-      this.clickOsc.stop();
+      this.clickOsc.releaseNote();
       this.synth.interval.next(null);
     }
   }

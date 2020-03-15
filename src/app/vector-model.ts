@@ -1,4 +1,5 @@
 export class Vector {
+  timing = 200;
   x: number;
   y: number;
   constructor(x, y) {
