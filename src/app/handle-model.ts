@@ -11,9 +11,9 @@ class Handle {
   dragBoundary: string;
   rectX: number;
   rectWidth: number;
-  constructor(i: number) {
+  constructor(i: number, offsetRadius: number) {
     this.index = i;
-    this.initX = 10 + (100 * i);
+    this.initX = offsetRadius + (100 * i);
     this.initY = 100;
     this.coord = new Vector(100 * i, 100);
   }
@@ -23,9 +23,9 @@ class Handle {
 }
 
 export class VerticalHandle extends Handle {
-  constructor(i: number) {
-    super(i);
-    this.radius = 10;
+  constructor(i: number, offsetRadius: number) {
+    super(i, offsetRadius);
+    this.radius = offsetRadius;
     this.fill = 'black';
     this.lockAxis = 'y';
     this.dragBoundary = '.circle-container';
@@ -35,13 +35,13 @@ export class VerticalHandle extends Handle {
 }
 
 export class BezierHandle extends Handle {
-  constructor(i: number) {
-    super(i);
-    this.radius = 5;
+  constructor(i: number, offsetRadius: number) {
+    super(i, offsetRadius);
+    this.radius = offsetRadius / 2;
     this.fill = 'grey';
     this.lockAxis = '';
     this.dragBoundary = '.handle-container';
-    this.rectX = 10 + ((i * 100) - 100);
+    this.rectX = offsetRadius + ((i * 100) - 100);
     this.rectWidth = 200;
   }
 }

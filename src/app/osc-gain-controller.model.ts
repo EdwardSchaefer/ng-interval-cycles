@@ -4,6 +4,7 @@ import {Vector} from './vector-model';
 export class OscGainController {
   osc: OscillatorNode;
   gain: GainNode;
+  contextStart: number;
   constructor(osc: OscillatorNode, gain: GainNode, interval: Interval, curve: number[], context) {
     this.osc = osc;
     this.gain = gain;
@@ -15,7 +16,8 @@ export class OscGainController {
     this.play(curve, context);
   }
   play(curve: number[], context) {
-    let contextTime = context.currentTime;
+    this.contextStart = context.currentTime;
+    let contextTime = this.contextStart;
     let curveTime = 0;
     this.osc.start();
     while (curveTime < curve.length) {

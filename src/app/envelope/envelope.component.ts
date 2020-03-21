@@ -11,11 +11,12 @@ import {VerticalHandle, BezierHandle} from '../handle-model';
 export class EnvelopeComponent {
   envelope: Envelope;
   nodeCount = 7;
+  offsetRadius = 10;
   height = 200;
-  width = this.height * this.nodeCount / 2;
+  width = (this.height * this.nodeCount / 2) - ((this.height / 2) - this.offsetRadius * 2);
   debugX = 0;
   constructor(public synth: SynthService) {
-    this.envelope = new Envelope(this.nodeCount, this.height);
+    this.envelope = new Envelope(this.nodeCount, this.height, this.offsetRadius);
   }
   update(event, handle: (VerticalHandle | BezierHandle)) {
     const transform: string = event.source.element.nativeElement.style.transform;
@@ -33,10 +34,10 @@ export class EnvelopeComponent {
 class Envelope {
   handles: (VerticalHandle[] | BezierHandle[]) = [];
   height: number;
-  constructor(nodes: number, height: number) {
+  constructor(nodes: number, height: number, offsetRadius: number) {
     this.height = height;
     for (let i = 0; i < nodes; i++) {
-      this.handles.push(i % 2 ? new BezierHandle(i) : new VerticalHandle(i));
+      this.handles.push(i % 2 ? new BezierHandle(i, offsetRadius) : new VerticalHandle(i, offsetRadius));
     }
   }
   get path(): string {
