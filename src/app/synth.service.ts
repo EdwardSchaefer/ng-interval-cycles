@@ -13,7 +13,7 @@ export class SynthService {
   contextTiming: Observable<number>;
   analyser: AnalyserNode;
   interval: Subject<Interval> = new Subject<Interval | null>();
-  curve: BehaviorSubject<Vector[]> = new BehaviorSubject<Vector[]>([]);
+  curve: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
   constructor() {
     // this.curve.subscribe(a => {
     //   console.log(a);

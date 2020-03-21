@@ -4,7 +4,7 @@ import {Vector} from './vector-model';
 export class OscGainController {
   osc: OscillatorNode;
   gain: GainNode;
-  constructor(osc: OscillatorNode, gain: GainNode, interval: Interval, curve: Vector[], context) {
+  constructor(osc: OscillatorNode, gain: GainNode, interval: Interval, curve: number[], context) {
     this.osc = osc;
     this.gain = gain;
     this.osc.type = 'sine';
@@ -14,14 +14,14 @@ export class OscGainController {
     this.osc.connect(this.gain);
     this.play(curve, context);
   }
-  play(curve: Vector[], context) {
+  play(curve: number[], context) {
     let contextTime = context.currentTime;
     let curveTime = 0;
     this.osc.start();
-    while (curveTime < curve[0].timing) {
-      curveTime = curveTime + 1;
-      const gainValue = 1 - (this.getHeight(curveTime, 0, curve) / 200);
+    while (curveTime < curve.length) {
+      const gainValue = curve[curveTime];
       this.gain.gain.setValueAtTime(gainValue, contextTime);
+      curveTime = curveTime + 1;
       contextTime = contextTime + 0.001;
     }
     setTimeout(() => {
@@ -35,15 +35,5 @@ export class OscGainController {
   }
   releaseNote() {
 
-  }
-  getCurve(x: number, b: number, c: number, d: number): number {
-    return (b - c + (Math.sqrt((x * b) + (x * d) - (2 * x * c) + Math.pow(c, 2) - (b * d)))) / (b - (2 * c) + d);
-  }
-  getY(t: number, b: number, c: number, d: number): number {
-    return Math.pow((1 - t), 2) * b + 2 * (1 - t) * t * c + Math.pow(t, 2) * d;
-  }
-  getHeight(time: number, section: number, vectors: Vector[]): number {
-    const curve = this.getCurve(time, vectors[section].x, vectors[section + 1].x, vectors[section + 2].x);
-    return this.getY(curve, vectors[section].y, vectors[section + 1].y, vectors[section + 2].y);
   }
 }

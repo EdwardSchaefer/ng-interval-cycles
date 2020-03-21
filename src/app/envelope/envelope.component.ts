@@ -22,8 +22,8 @@ export class EnvelopeComponent {
     const coords = transform.substring(12).split(',');
     handle.coord.x = parseInt(coords[0].split('px')[0], 10) + handle.initX;
     handle.coord.y = parseInt(coords[1].split('px')[0], 10) + handle.initY;
-    const handles = this.envelope.handles.map(envHandle => new Vector(envHandle.coord.x, envHandle.coord.y));
-    this.synth.curve.next(handles);
+    const curve = this.envelope.getCurve();
+    this.synth.curve.next(curve);
   }
   debug(event) {
     this.debugX = event.x;
@@ -70,5 +70,14 @@ class Envelope {
   getH(time: number, start: number): number {
     const curve = this.getT(time, this.getV(start).x, this.getV(start + 1).x, this.getV(start + 2).x);
     return this.getY(curve, this.getV(start).y, this.getV(start + 1).y, this.getV(start + 2).y);
+  }
+  getCurve(): number[] {
+    let i = 0;
+    const curve = [];
+    while (i < 200) {
+      curve.push(1 - (this.getH(i, 0) / 200));
+      i ++;
+    }
+    return curve;
   }
 }
