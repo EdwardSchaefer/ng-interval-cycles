@@ -1,0 +1,19 @@
+<svg #svgElement [attr.width]="size" [attr.height]="size">
+  <g>
+    <circle
+    [attr.cx]="radius"
+    [attr.cy]="radius"
+    [attr.r]="radius"
+    [attr.stroke]="'black'"
+    [attr.stokeWidth]="strokeWidth"
+    [attr.fill]="'white'"
+    ></circle>
+    <line *ngIf="radiusLine"
+      [attr.x1]="radiusLine.x1"
+      [attr.y1]="radiusLine.y1"
+      [attr.x2]="radiusLine.x2"
+      [attr.y2]="radiusLine.y2"
+      style="stroke: rgb(0, 0, 0); stroke-width: 1"
+    ></line>
+  </g>
+</svg>

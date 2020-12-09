@@ -1,0 +1,12 @@
+.svg-container {
+  display: inline-block;
+}
+.path-container {
+  display: inline-block;
+  position: relative;
+}
+.circle-container {
+  display: inline-block;
+  position: relative;
+  left: -620px;
+}
