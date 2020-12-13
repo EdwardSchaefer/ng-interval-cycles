@@ -1,12 +1,15 @@
+.envelope-container {
+  width: 100%;
+}
 .svg-container {
   display: inline-block;
 }
 .path-container {
   display: inline-block;
-  position: relative;
+  position: absolute;
 }
 .circle-container {
   display: inline-block;
   position: relative;
-  left: -620px;
+  /*left: -920px;*/
 }

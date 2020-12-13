@@ -11,11 +11,13 @@ export class WaveformComponent implements AfterViewInit {
   canvas;
   canvasContext;
   height = 300;
-  width = 900;
+  width = 600;
   constructor(public synth: SynthService) { }
   ngAfterViewInit(): void {
     this.canvas = this.waveform.nativeElement;
     this.canvasContext = this.canvas.getContext('2d');
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
     this.draw();
   }
   draw() {

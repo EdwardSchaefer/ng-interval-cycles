@@ -1,3 +1,6 @@
 .component-container {
   display: inline-block;
+  border: 25px solid #888888;
+  vertical-align: top;
+  float: left;
 }

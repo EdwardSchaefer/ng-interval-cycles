@@ -10,7 +10,7 @@ import {Radius} from '../radius-model';
 export class CircleComponent implements AfterViewInit {
   @ViewChild('svgElement', {static: true}) svgElement: ElementRef;
   radiusLine: Radius;
-  size = 400;
+  size = 300;
   radius = this.size / 2;
   strokeWidth = 1;
   constructor(public synth: SynthService) {
