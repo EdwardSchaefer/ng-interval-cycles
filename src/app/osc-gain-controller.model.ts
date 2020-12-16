@@ -11,7 +11,7 @@ export class OscGainController {
     this.osc.type = 'sine';
     this.osc.frequency.value = interval.frequency;
     // this.gain.connect(this.analyser);
-    this.gain.gain.value = 1;
+    this.gain.gain.value = 0.5;
     this.osc.connect(this.gain);
     this.play(curve, context);
   }

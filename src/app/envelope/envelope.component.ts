@@ -17,6 +17,8 @@ export class EnvelopeComponent {
   debugX = 0;
   constructor(public synth: SynthService) {
     this.envelope = new Envelope(this.nodeCount, this.height, this.offsetRadius);
+    const curve = this.envelope.getCurve();
+    this.synth.curve.next(curve);
   }
   update(event, handle: (VerticalHandle | BezierHandle)) {
     const transform: string = event.source.element.nativeElement.style.transform;

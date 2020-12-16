@@ -10,7 +10,6 @@ import {Vector} from './vector-model';
 export class SynthService {
   initialized: boolean;
   context: AudioContext;
-  contextTiming: Observable<number>;
   analyser: AnalyserNode;
   interval: Subject<Interval> = new Subject<Interval | null>();
   curve: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
@@ -21,7 +20,6 @@ export class SynthService {
   }
   initialize() {
     this.context = new AudioContext();
-    this.contextTiming = new Observable();
     this.analyser = this.context.createAnalyser();
     this.analyser.connect(this.context.destination);
     this.initialized = true;
