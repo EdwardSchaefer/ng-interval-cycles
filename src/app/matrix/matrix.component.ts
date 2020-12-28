@@ -35,7 +35,7 @@ export class MatrixComponent implements OnChanges {
   }
   @HostListener('window: resize', ['$event'])
   resize(event: any) {
-    console.log(event);
+    // console.log(event);
   }
   constructor(public synth: SynthService) {}
   ngOnChanges() {

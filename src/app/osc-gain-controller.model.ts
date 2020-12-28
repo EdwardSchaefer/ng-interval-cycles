@@ -16,6 +16,7 @@ export class OscGainController {
     this.play(curve, context);
   }
   play(curve: number[], context) {
+    const playTime = curve.length;
     this.contextStart = context.currentTime;
     let contextTime = this.contextStart;
     let curveTime = 0;
@@ -28,7 +29,7 @@ export class OscGainController {
     }
     setTimeout(() => {
       this.stop();
-    }, 200);
+    }, playTime);
   }
   stop() {
     this.gain.disconnect();

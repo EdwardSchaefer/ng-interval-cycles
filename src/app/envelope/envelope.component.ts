@@ -71,15 +71,21 @@ class Envelope {
     return Math.pow((1 - t), 2) * b + 2 * (1 - t) * t * c + Math.pow(t, 2) * d;
   }
   getH(time: number, start: number): number {
-    const curve = this.getT(time, this.getV(start).x, this.getV(start + 1).x, this.getV(start + 2).x);
-    return this.getY(curve, this.getV(start).y, this.getV(start + 1).y, this.getV(start + 2).y);
+    const t = this.getT(time, this.getV(start).x, this.getV(start + 1).x, this.getV(start + 2).x);
+    return this.getY(t, this.getV(start).y, this.getV(start + 1).y, this.getV(start + 2).y);
   }
   getCurve(): number[] {
-    let i = 0;
     const curve = [];
-    while (i < 200) {
-      curve.push(1 - (this.getH(i, 0) / 200));
-      i ++;
+    let totalTiming = 0;
+    for (const handle of this.handles) {
+      let coordTiming = 0;
+      if (handle instanceof VerticalHandle && handle.index < 6) {
+        while (coordTiming < handle.coord.timing) {
+          curve.push(1 - (this.getH(totalTiming, handle.index) / 200));
+          coordTiming ++;
+          totalTiming ++;
+        }
+      }
     }
     return curve;
   }
