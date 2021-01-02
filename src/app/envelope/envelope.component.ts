@@ -80,9 +80,17 @@ class Envelope {
   getY(t: number, b: number, c: number, d: number): number {
     return Math.pow((1 - t), 2) * b + 2 * (1 - t) * t * c + Math.pow(t, 2) * d;
   }
-  getH(time: number, start: number): number {
-    const t = this.getT(time, this.getV(start).x, this.getV(start + 1).x, this.getV(start + 2).x);
-    return this.getY(t, this.getV(start).y, this.getV(start + 1).y, this.getV(start + 2).y);
+  getH(time: number, handle: VerticalHandle): number {
+    if (handle instanceof VerticalHandle) {
+      const index = handle.index;
+      const scaling = (handle.coord.timing / this.height);
+      const b = this.getV(index).x * scaling;
+      const c = this.getV(index + 1).x * scaling;
+      const d = this.getV(index + 2).x * scaling;
+      const t = this.getT(time, b, c, d);
+      return this.getY(t, this.getV(index).y, this.getV(index + 1).y, this.getV(index + 2).y);
+    }
+    return 0;
   }
   getCurve(): number[] {
     const curve = [];
@@ -91,7 +99,7 @@ class Envelope {
       let coordTiming = 0;
       if (handle instanceof VerticalHandle && handle.index < 6) {
         while (coordTiming < handle.coord.timing) {
-          curve.push(1 - (this.getH(totalTiming, handle.index) / 200));
+          curve.push(1 - (this.getH(totalTiming, handle) / this.height));
           coordTiming ++;
           totalTiming ++;
         }
