@@ -92,14 +92,15 @@ class Envelope {
     }
     return 0;
   }
-  getCurve(): number[] {
+  getCurve(): number[][] {
     const curve = [];
     let totalTiming = 0;
     for (const handle of this.handles) {
       let coordTiming = 0;
       if (handle instanceof VerticalHandle && handle.index < 6) {
+        curve.push([]);
         while (coordTiming < handle.coord.timing) {
-          curve.push(1 - (this.getH(totalTiming, handle) / this.height));
+          curve[handle.index / 2].push(1 - (this.getH(totalTiming, handle) / this.height));
           coordTiming ++;
           totalTiming ++;
         }

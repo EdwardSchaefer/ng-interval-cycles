@@ -12,7 +12,7 @@ export class SynthService {
   context: AudioContext;
   analyser: AnalyserNode;
   interval: Subject<Interval> = new Subject<Interval | null>();
-  curve: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
+  curve: BehaviorSubject<number[][]> = new BehaviorSubject<number[][]>([]);
   constructor() {
     // this.curve.subscribe(a => {
     //   console.log(a);
