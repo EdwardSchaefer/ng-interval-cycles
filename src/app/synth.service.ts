@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Interval} from './interval-model';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
 import {OscGainController} from './osc-gain-controller.model';
-import {Vector} from './vector-model';
 
 @Injectable({
   providedIn: 'root'

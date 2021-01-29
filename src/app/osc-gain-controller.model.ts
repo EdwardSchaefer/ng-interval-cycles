@@ -7,7 +7,9 @@ export class OscGainController {
   released: boolean;
   sustained: boolean;
   releaseCurve: number[];
+  key: string;
   constructor(osc: OscillatorNode, gain: GainNode, interval: Interval, curve: number[][], context) {
+    this.key = interval.keyedNote;
     this.osc = osc;
     this.gain = gain;
     this.context = context;

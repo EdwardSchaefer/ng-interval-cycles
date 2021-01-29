@@ -8,9 +8,11 @@ export class Interval {
     width: '',
     height: ''
   };
-  constructor(temperament: number, value: number) {
+  keyedNote: string;
+  constructor(temperament: number, value: number, keyedNote?: string) {
     this.value = value;
     this.temperament = temperament;
+    this.keyedNote = keyedNote;
     this.color.width = ((1 / (temperament + 1)) * 100) + '%';
     this.color.height = ((1 / (temperament + 1)) * 100) + '%';
     const equalTempNthRootOfTwo = Math.pow(2, (1 / this.temperament));

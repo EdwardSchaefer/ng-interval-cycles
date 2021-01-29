@@ -10,3 +10,9 @@
   display: inline-block;
   user-select: none;
 }
+svg {
+  pointer-events: none;
+}
+text {
+  pointer-events: none;
+}

@@ -3,7 +3,8 @@ import {Temperament} from '../temperament-model';
 import {Interval} from '../interval-model';
 import {SynthService} from '../synth.service';
 import {fromEvent} from 'rxjs';
-import {take} from 'rxjs/operators';
+import {filter, first, take} from 'rxjs/operators';
+import {merge} from 'rxjs';
 import {OscGainController} from '../osc-gain-controller.model';
 
 @Component({
@@ -17,25 +18,23 @@ export class MatrixComponent implements OnChanges {
   matrix: Interval[] = [];
   clickOsc: OscGainController;
   defaultKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'q', 'w'];
-  downKeys: string[] = [];
+  pressedKeys: OscGainController[] = [];
   matrixContainer: {maxWidth: string, maxHeight: string};
   @HostListener('document: keydown', ['$event'])
   keyPlay(event) {
     const index = this.defaultKeys.indexOf(event.key);
-    if (index >= 0 && !this.downKeys.includes(event.key)) {
-      this.downKeys.push(event.key);
+    const pressedKey = this.pressedKeys.find(key => key.key === event.key);
+    if (index >= 0 && !pressedKey) {
       const interval = this.matrix[index + this.temperament.value + 1];
-      const oscGain = this.synth.play(interval);
-      const keyup = fromEvent(document, 'keyup').pipe(take(1));
-      keyup.subscribe(subscriber => {
-        oscGain.releaseNote();
-        this.downKeys = this.downKeys.filter(key => key !== event.key);
+      interval.keyedNote = event.key;
+      const osc = this.synth.play(interval);
+      this.pressedKeys.push(osc);
+      const keyup = fromEvent(document, 'keyup').pipe(filter((key: any) => key.key === interval.keyedNote), first());
+      keyup.subscribe(next => {
+        osc.releaseNote();
+        this.pressedKeys = this.pressedKeys.filter(key => key.key !== interval.keyedNote).slice();
       });
     }
-  }
-  @HostListener('window: resize', ['$event'])
-  resize(event: any) {
-    // console.log(event);
   }
   constructor(public synth: SynthService) {}
   ngOnChanges() {
@@ -50,10 +49,16 @@ export class MatrixComponent implements OnChanges {
       }
     }
   }
-  clickPlay(interval: Interval) {
-    this.clickOsc = this.synth.play(interval);
+  clickPlay(event, interval: Interval) {
+    const clickOsc = this.synth.play(interval);
+    const up = fromEvent(event.target, 'mouseup').pipe(take(1));
+    const leave = fromEvent(event.target, 'mouseleave').pipe(take(1));
+    merge(up, leave).subscribe(a => {
+      clickOsc.releaseNote();
+      this.synth.interval.next(null);
+    });
   }
-  stop(interval: Interval) {
+  stop(event, interval: Interval) {
     if (this.clickOsc) {
       this.clickOsc.releaseNote();
       this.synth.interval.next(null);
