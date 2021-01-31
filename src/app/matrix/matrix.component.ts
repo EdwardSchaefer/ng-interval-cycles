@@ -5,7 +5,7 @@ import {SynthService} from '../synth.service';
 import {fromEvent} from 'rxjs';
 import {filter, first, take} from 'rxjs/operators';
 import {merge} from 'rxjs';
-import {OscGainController} from '../osc-gain-controller.model';
+import {Note} from '../note.model';
 
 @Component({
   selector: 'nic-matrix',
@@ -16,9 +16,9 @@ export class MatrixComponent implements OnChanges {
   @Input() temperament: Temperament;
   // no longer a matrix
   matrix: Interval[] = [];
-  clickOsc: OscGainController;
+  clickOsc: Note;
   defaultKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'q', 'w'];
-  pressedKeys: OscGainController[] = [];
+  pressedKeys: Note[] = [];
   matrixContainer: {maxWidth: string, maxHeight: string};
   @HostListener('document: keydown', ['$event'])
   keyPlay(event) {
@@ -27,11 +27,11 @@ export class MatrixComponent implements OnChanges {
     if (index >= 0 && !pressedKey) {
       const interval = this.matrix[index + this.temperament.value + 1];
       interval.keyedNote = event.key;
-      const osc = this.synth.play(interval);
-      this.pressedKeys.push(osc);
+      const note = this.synth.play(interval);
+      this.pressedKeys.push(note);
       const keyup = fromEvent(document, 'keyup').pipe(filter((key: any) => key.key === interval.keyedNote), first());
       keyup.subscribe(next => {
-        osc.releaseNote();
+        note.releaseNote();
         this.pressedKeys = this.pressedKeys.filter(key => key.key !== interval.keyedNote).slice();
       });
     }

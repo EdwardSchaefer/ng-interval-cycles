@@ -1,6 +1,6 @@
 import {Interval} from './interval-model';
 
-export class OscGainController {
+export class Note {
   osc: OscillatorNode;
   gain: GainNode;
   context: any;
