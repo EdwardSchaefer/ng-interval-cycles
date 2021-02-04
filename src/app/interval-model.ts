@@ -3,16 +3,16 @@ export class Interval {
   temperament: number;
   frequency: number;
   referencePitchHz = 440;
+  key: string;
   color: IntervalStyles = {
     backgroundColor: '',
     width: '',
     height: ''
   };
-  keyedNote: string;
-  constructor(temperament: number, value: number, keyedNote?: string) {
+  constructor(temperament: number, value: number, key: string) {
     this.value = value;
     this.temperament = temperament;
-    this.keyedNote = keyedNote;
+    this.key = key;
     this.color.width = ((1 / (temperament + 1)) * 100) + '%';
     this.color.height = ((1 / (temperament + 1)) * 100) + '%';
     const equalTempNthRootOfTwo = Math.pow(2, (1 / this.temperament));

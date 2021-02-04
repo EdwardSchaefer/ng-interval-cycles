@@ -1,9 +1,9 @@
-import {Component, HostListener, Input, OnChanges} from '@angular/core';
+import {Component, Input, OnChanges} from '@angular/core';
 import {Temperament} from '../temperament-model';
 import {Interval} from '../interval-model';
 import {SynthService} from '../synth.service';
-import {fromEvent} from 'rxjs';
-import {filter, first, take} from 'rxjs/operators';
+import {fromEvent, Observable} from 'rxjs';
+import {filter, first, map, take} from 'rxjs/operators';
 import {merge} from 'rxjs';
 import {Note} from '../note.model';
 
@@ -17,35 +17,40 @@ export class MatrixComponent implements OnChanges {
   // no longer a matrix
   matrix: Interval[] = [];
   clickOsc: Note;
-  defaultKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'q', 'w'];
   pressedKeys: Note[] = [];
   matrixContainer: {maxWidth: string, maxHeight: string};
-  @HostListener('document: keydown', ['$event'])
-  keyPlay(event) {
-    const index = this.defaultKeys.indexOf(event.key);
-    const pressedKey = this.pressedKeys.find(key => key.key === event.key);
-    if (index >= 0 && !pressedKey) {
+  keyDown: Observable<any> = fromEvent(document, 'keydown').pipe(
+    filter(((event: KeyboardEvent) => !this.pressedKeys.map(key => key.interval.key).includes(event.key))),
+    map((event: KeyboardEvent) => this.validKeys.indexOf(event.key)),
+    filter(index => index >= 0)
+  );
+  defaultKeys: string[] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'q', 'w', 'e', 'r', 't', 'y', 'u',
+    'i', 'o', 'p', 'a', 's', 'd', 'f'];
+  validKeys: string[] = [];
+  constructor(public synth: SynthService) {
+    this.keyDown.subscribe((index: number) => {
       const interval = this.matrix[index + this.temperament.value + 1];
-      interval.keyedNote = event.key;
       const note = this.synth.play(interval);
       this.pressedKeys.push(note);
-      const keyup = fromEvent(document, 'keyup').pipe(filter((key: any) => key.key === interval.keyedNote), first());
+      const keyup = fromEvent(document, 'keyup').pipe(
+        filter((key: KeyboardEvent) => this.validKeys.includes(key.key)),
+        first()
+      );
       keyup.subscribe(next => {
         note.releaseNote();
-        this.pressedKeys = this.pressedKeys.filter(key => key.key !== interval.keyedNote).slice();
+        this.pressedKeys = this.pressedKeys.filter(key => key.interval.key !== interval.key).slice();
       });
-    }
+    });
   }
-  constructor(public synth: SynthService) {}
   ngOnChanges() {
     this.matrix = [];
     const styleValue = (50 * (this.temperament.value + 1)) + 'px';
     this.matrixContainer = {maxWidth: styleValue, maxHeight: styleValue};
+    this.validKeys = this.defaultKeys.slice(0, this.temperament.value);
     for (let i = 0; i <= this.temperament.value; i++) {
-      // this.matrix.push([]);
       for (let j = 0; j <= this.temperament.value; j++) {
         const value = (i * j) % this.temperament.value;
-        this.matrix.push(new Interval(this.temperament.value, value));
+        this.matrix.push(new Interval(this.temperament.value, value, this.validKeys[value]));
       }
     }
   }

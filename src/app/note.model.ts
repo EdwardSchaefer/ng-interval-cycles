@@ -3,18 +3,19 @@ import {Interval} from './interval-model';
 export class Note {
   osc: OscillatorNode;
   gain: GainNode;
+  interval: Interval;
   context: any;
   released: boolean;
   sustained: boolean;
   releaseCurve: number[];
   key: string;
   constructor(osc: OscillatorNode, gain: GainNode, interval: Interval, curve: number[][], context) {
-    this.key = interval.keyedNote;
+    this.interval = interval;
     this.osc = osc;
     this.gain = gain;
     this.context = context;
     this.osc.type = 'sine';
-    this.osc.frequency.value = interval.frequency;
+    this.osc.frequency.value = this.interval.frequency;
     this.gain.gain.value = 0.5;
     this.osc.connect(this.gain);
     this.play(curve);
