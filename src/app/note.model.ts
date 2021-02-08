@@ -9,16 +9,16 @@ export class Note {
   sustained: boolean;
   releaseCurve: number[];
   key: string;
-  constructor(osc: OscillatorNode, gain: GainNode, interval: Interval, curve: number[][], context) {
-    this.interval = interval;
-    this.osc = osc;
-    this.gain = gain;
-    this.context = context;
+  constructor(noteData: NoteInterface) {
+    this.interval = noteData.interval;
+    this.osc = noteData.osc;
+    this.gain = noteData.gain;
+    this.context = noteData.context;
     this.osc.type = 'sine';
     this.osc.frequency.value = this.interval.frequency;
     this.gain.gain.value = 0.5;
     this.osc.connect(this.gain);
-    this.play(curve);
+    this.play(noteData.curve);
   }
   play(curve: number[][]) {
     const preSustainCurve = [...curve[0], ...curve[1]];
@@ -54,4 +54,12 @@ export class Note {
       setTimeout(() => this.stop(), this.releaseCurve.length);
     }
   }
+}
+
+export interface NoteInterface {
+  osc: OscillatorNode;
+  gain: GainNode;
+  interval: Interval;
+  curve: number[][];
+  context: any;
 }

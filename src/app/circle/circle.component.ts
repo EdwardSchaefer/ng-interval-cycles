@@ -14,7 +14,7 @@ export class CircleComponent implements AfterViewInit {
   radius = this.size / 2;
   strokeWidth = 1;
   constructor(public synth: SynthService) {
-    this.synth.interval.subscribe(interval => {
+    this.synth.play.subscribe(interval => {
       if (interval) {
         this.radiusLine = new Radius(interval, this.radius);
       } else {
