@@ -16,11 +16,11 @@ export class CircleComponent implements AfterViewInit {
   constructor(public synth: SynthService) {
     this.synth.note.subscribe(note => {
       this.radiusLine = new Radius(note.interval, this.radius);
-      this.synth.amplitude.subscribe(amp => {
-        if (this.radiusLine) {
-          this.radiusLine.opacity = amp;
-        }
-      });
+    });
+    this.synth.amplitude.subscribe(amp => {
+      if (this.radiusLine) {
+        this.radiusLine.opacity = amp;
+      }
     });
   }
   ngAfterViewInit(): void {
