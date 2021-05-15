@@ -11,7 +11,7 @@ export class SynthService {
   initialized: boolean;
   context: AudioContext;
   analyser: AnalyserNode;
-  play: Subject<Interval> = new Subject<Interval>();
+  note: Subject<Note> = new Subject<Note>();
   curve: BehaviorSubject<number[][]> = new BehaviorSubject<number[][]>([]);
   keyDown: Observable<any> = fromEvent(document, 'keydown').pipe(
     filter(((event: KeyboardEvent) => !this.pressedKeys.map(key => key.interval.key).includes(event.key))),
@@ -22,27 +22,29 @@ export class SynthService {
     'i', 'o', 'p', 'a', 's', 'd', 'f'];
   validKeys: string[] = [];
   pressedKeys: Note[] = [];
-  constructor() {
-    this.play.subscribe(interval => {
-      const note = this.generateNote(interval);
-      if (interval.key) {
-        this.pressedKeys.push(note);
-        const keyup = fromEvent(document, 'keyup').pipe(
-          filter((key: KeyboardEvent) => this.validKeys.includes(key.key)),
-          first()
-        );
-        keyup.subscribe(next => {
-          note.releaseNote();
-          this.pressedKeys = this.pressedKeys.filter(key => key.interval.key !== interval.key).slice();
-        });
-      } else {
-        const up = fromEvent(event.target, 'mouseup').pipe(take(1));
-        const leave = fromEvent(event.target, 'mouseleave').pipe(take(1));
-        merge(up, leave).subscribe(a => {
-          note.releaseNote();
-        });
-      }
-    });
+  amplitude: Subject<number> = new Subject<number>();
+  constructor() {}
+  play(interval) {
+    const note = this.generateNote(interval);
+    if (interval.key) {
+      this.pressedKeys.push(note);
+      const keyup = fromEvent(document, 'keyup').pipe(
+        filter((key: KeyboardEvent) => this.validKeys.includes(key.key)),
+        first()
+      );
+      keyup.subscribe(next => {
+        note.releaseNote();
+        this.pressedKeys = this.pressedKeys.filter(key => key.interval.key !== interval.key).slice();
+      });
+    } else {
+      const up = fromEvent(event.target, 'mouseup').pipe(take(1));
+      const leave = fromEvent(event.target, 'mouseleave').pipe(take(1));
+      merge(up, leave).subscribe(a => {
+        note.releaseNote();
+      });
+    }
+    this.note.next(note);
+    this.draw();
   }
   initialize() {
     this.context = new AudioContext();
@@ -61,5 +63,18 @@ export class SynthService {
     const note = new Note({osc, gain, interval, curve, context});
     note.gain.connect(this.analyser);
     return note;
+  }
+  draw() {
+    const times = new Uint8Array(this.analyser.frequencyBinCount);
+    this.analyser.getByteTimeDomainData(times);
+    let greatestValue = 0;
+    for (let i = 0; i < times.length; i++) {
+      const value = Math.abs(times[i] - 128);
+      if (value > greatestValue) {
+        greatestValue = value;
+      }
+    }
+    this.amplitude.next(greatestValue / 128);
+    requestAnimationFrame(this.draw.bind(this));
   }
 }

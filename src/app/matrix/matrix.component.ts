@@ -16,7 +16,7 @@ export class MatrixComponent implements OnChanges {
   constructor(public synth: SynthService) {
     this.synth.keyDown.subscribe((index: number) => {
       const interval = this.matrix[index + this.temperament.value + 1];
-      this.synth.play.next(interval);
+      this.synth.play(interval);
     });
   }
   ngOnChanges() {
@@ -33,6 +33,6 @@ export class MatrixComponent implements OnChanges {
   }
   clickPlay(interval: Interval) {
     interval.key = null;
-    this.synth.play.next(interval);
+    this.synth.play(interval);
   }
 }
