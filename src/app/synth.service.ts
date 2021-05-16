@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Interval} from './interval-model';
-import {BehaviorSubject, Subject} from 'rxjs';
+import {BehaviorSubject, Observable, of, Subject} from 'rxjs';
 import {Note} from './note.model';
 
 @Injectable({
@@ -21,7 +21,7 @@ export class SynthService {
     this.initialized = true;
     this.draw();
   }
-  generateNote(interval: Interval): Note {
+  generateNote(interval: Interval): Observable<Note> {
     if (!this.initialized) {
       this.initialize();
     }
@@ -31,7 +31,7 @@ export class SynthService {
     const context = this.context;
     const note = new Note({osc, gain, interval, curve, context});
     note.gain.connect(this.analyser);
-    return note;
+    return of(note);
   }
   draw() {
     const times = new Uint8Array(this.analyser.frequencyBinCount);

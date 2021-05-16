@@ -3,7 +3,7 @@ import {Temperament} from '../temperament-model';
 import {Interval} from '../interval-model';
 import {SynthService} from '../synth.service';
 import {fromEvent, merge, Observable} from 'rxjs';
-import {filter, first, map, take} from 'rxjs/operators';
+import {filter, map, switchMap, take} from 'rxjs/operators';
 import {Note} from '../note.model';
 
 @Component({
@@ -19,26 +19,18 @@ export class MatrixComponent implements OnChanges {
   defaultKeys: string[] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'q', 'w', 'e', 'r', 't', 'y', 'u',
     'i', 'o', 'p', 'a', 's', 'd', 'f'];
   validKeys: string[] = [];
-  pressedKeys: Note[] = [];
-  keyDown: Observable<any> = fromEvent(document, 'keydown').pipe(
-    filter(((event: KeyboardEvent) => !this.pressedKeys.map(key => key.interval.key).includes(event.key))),
-    map((event: KeyboardEvent) => this.validKeys.indexOf(event.key)),
-    filter(index => index >= 0)
+  keyDown: Observable<Note> = fromEvent(document, 'keydown').pipe(
+    filter((key: KeyboardEvent) => !key.repeat && this.validKeys.includes(key.key)),
+    map((key: KeyboardEvent) => this.matrix.find(interval => interval.key === key.key)),
+    switchMap((interval: Interval) => this.synth.generateNote(interval))
   );
   constructor(public synth: SynthService) {
-    this.keyDown.subscribe((index: number) => {
-      const interval = this.matrix[index + this.temperament.value + 1];
-      const note = this.synth.generateNote(interval);
-      this.pressedKeys.push(note);
-      const keyup = fromEvent(document, 'keyup').pipe(
-        filter((key: KeyboardEvent) => this.validKeys.includes(key.key)),
-        first()
+    this.keyDown.subscribe(note => {
+      const keyup: Observable<KeyboardEvent> = fromEvent(document, 'keyup').pipe(
+        filter((key: KeyboardEvent) => key.key === note.interval.key),
+        take(1)
       );
-      keyup.subscribe(next => {
-        note.releaseNote();
-        this.pressedKeys = this.pressedKeys.filter(key => key.interval.key !== interval.key).slice();
-      });
-      this.synth.note.next(note);
+      keyup.subscribe(keyUpEvent => note.releaseNote());
     });
   }
   ngOnChanges() {
@@ -54,12 +46,9 @@ export class MatrixComponent implements OnChanges {
     }
   }
   clickPlay(event, interval: Interval) {
-    const note = this.synth.generateNote(interval);
+    const noteObs = this.synth.generateNote(interval);
     const up = fromEvent(event.target, 'mouseup').pipe(take(1));
     const leave = fromEvent(event.target, 'mouseleave').pipe(take(1));
-    merge(up, leave).subscribe(a => {
-      note.releaseNote();
-    });
-    this.synth.note.next(note);
+    merge(up, leave).pipe(take(1), switchMap(() => noteObs)).subscribe(note => note.releaseNote());
   }
 }
