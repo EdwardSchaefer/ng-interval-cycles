@@ -8,13 +8,13 @@
     [attr.stokeWidth]="strokeWidth"
     [attr.fill]="'white'"
     ></circle>
-    <line *ngIf="radiusLine"
-      [attr.x1]="radiusLine.x1"
-      [attr.y1]="radiusLine.y1"
-      [attr.x2]="radiusLine.x2"
-      [attr.y2]="radiusLine.y2"
-      [attr.stroke]="radiusLine.stroke"
-      [attr.opacity]="radiusLine.opacity"
+    <line *ngFor="let line of radiusLines"
+      [attr.x1]="line.x1"
+      [attr.y1]="line.y1"
+      [attr.x2]="line.x2"
+      [attr.y2]="line.y2"
+      [attr.stroke]="line.stroke"
+      [attr.opacity]="line.opacity"
     ></line>
   </g>
 </svg>
