@@ -1,24 +1,49 @@
-import {Component} from '@angular/core';
+import {AfterViewInit, Component} from '@angular/core';
 import {SynthService} from '../synth.service';
 import {Vector} from '../vector-model';
 import {VerticalHandle, BezierHandle} from '../handle-model';
+import {Note} from '../note.model';
 
 @Component({
   selector: 'nic-envelope',
   templateUrl: './envelope.component.html',
   styleUrls: ['./envelope.component.css']
 })
-export class EnvelopeComponent {
+export class EnvelopeComponent implements AfterViewInit {
   envelope: Envelope;
   nodeCount = 7;
   offsetRadius = 10;
   height = 200;
   width = (this.height * this.nodeCount / 2) - ((this.height / 2) - this.offsetRadius * 2);
   debugX = 0;
+  notes: Note[] = [];
   constructor(public synth: SynthService) {
     this.envelope = new Envelope(this.nodeCount, this.height, this.offsetRadius);
     const curve = this.envelope.getCurve();
     this.synth.curve.next(curve);
+    this.synth.note.subscribe(note => {
+      this.notes.push(note);
+      note.stopped.subscribe(stopped => {
+        if (stopped) {
+          this.notes = this.notes.filter(n => n !== note);
+        }
+      });
+    });
+  }
+  ngAfterViewInit(): void {
+    this.draw();
+  }
+  draw() {
+    const timesReducer = (acc, curr) => Math.abs(curr - 128) > acc ? Math.abs(curr - 128) : acc;
+    this.notes.forEach(note => {
+      const times = new Uint8Array(note.noteAnalyser.frequencyBinCount);
+      note.noteAnalyser.getByteTimeDomainData(times);
+      note.opacity = times.reduce(timesReducer, 0) / 128;
+      if (!note.sustained) {
+        note.xPosition = -1000 * (note.startTime - note.context.currentTime) + note.xOffset;
+      }
+    });
+    requestAnimationFrame(this.draw.bind(this));
   }
   update(event, handle: (VerticalHandle | BezierHandle)) {
     const transform: string = event.source.element.nativeElement.style.transform;

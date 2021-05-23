@@ -6,12 +6,16 @@ export class Note {
   gain: GainNode;
   interval: Interval;
   context: any;
+  startTime: number;
   released: boolean;
   sustained: boolean;
   releaseCurve: number[];
   key: string;
   noteAnalyser;
   stopped: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  opacity: number;
+  xPosition: number;
+  xOffset = 0;
   constructor(noteData: NoteInterface) {
     this.interval = noteData.interval;
     this.osc = noteData.osc;
@@ -29,10 +33,12 @@ export class Note {
     const preSustainCurve = [...curve[0], ...curve[1]];
     this.releaseCurve = curve[2];
     this.osc.start();
+    this.startTime = this.context.currentTime;
     this.setCurve(preSustainCurve);
     setTimeout(() => {
       this.sustained = true;
       if (this.released) {
+        this.sustained = false;
         this.setCurve(this.releaseCurve);
         setTimeout(() => this.stop(), this.releaseCurve.length);
       }
@@ -40,16 +46,17 @@ export class Note {
   }
   setCurve(curve: number[]) {
     let contextTime = this.context.currentTime;
-    let curveTime = 0;
     curve.forEach(gainValue => {
       this.gain.gain.setValueAtTime(gainValue, contextTime);
-      curveTime = curveTime + 1;
       contextTime = contextTime + 0.001;
     });
   }
   releaseNote() {
     this.released = true;
     if (this.sustained) {
+      this.xOffset = 400;
+      this.startTime = this.context.currentTime;
+      this.sustained = false;
       this.setCurve(this.releaseCurve);
       setTimeout(() => this.stop(), this.releaseCurve.length);
     }

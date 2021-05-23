@@ -28,6 +28,14 @@
                 [cdkDragLockAxis]="handle.lockAxis"
                 [cdkDragBoundary]="handle.dragBoundary">
         </circle>
+        <line *ngFor="let note of notes"
+              [attr.x1]="note.xPosition"
+              [attr.y1]="0"
+              [attr.x2]="note.xPosition"
+              [attr.y2]="height"
+              [attr.stroke]="note.interval.color.backgroundColor"
+              [attr.opacity]="note.opacity"
+        ></line>
         <!--      <circle-->
         <!--              style="pointer-events: none"-->
         <!--              [attr.cx]="debugX"-->
