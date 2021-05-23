@@ -41,6 +41,8 @@ export class EnvelopeComponent implements AfterViewInit {
       note.opacity = times.reduce(timesReducer, 0) / 128;
       if (!note.sustained) {
         note.xPosition = -1000 * (note.startTime - note.context.currentTime) + note.xOffset;
+      } else {
+        note.xPosition = note.xOffset + 400;
       }
     });
     requestAnimationFrame(this.draw.bind(this));

@@ -1,5 +1,5 @@
 import {Interval} from './interval-model';
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject} from 'rxjs';
 
 export class Note {
   osc: OscillatorNode;
@@ -15,7 +15,7 @@ export class Note {
   stopped: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   opacity: number;
   xPosition: number;
-  xOffset = 0;
+  xOffset = 10;
   constructor(noteData: NoteInterface) {
     this.interval = noteData.interval;
     this.osc = noteData.osc;
@@ -54,7 +54,7 @@ export class Note {
   releaseNote() {
     this.released = true;
     if (this.sustained) {
-      this.xOffset = 400;
+      this.xOffset = this.xOffset + 400;
       this.startTime = this.context.currentTime;
       this.sustained = false;
       this.setCurve(this.releaseCurve);
