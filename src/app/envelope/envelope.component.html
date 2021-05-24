@@ -1,17 +1,21 @@
-<!--<div class="path-container" style="top: 800px">-->
-<!--  <svg class="svg-container" [attr.width]="width" [attr.height]="height">-->
-<!--    <path [attr.d]="envelope.debugPath" stroke="black" fill="transparent"></path>-->
-<!--  </svg>-->
-<!--</div>-->
 <div class="envelope-container">
   <div class="path-container">
-    <svg class="svg-container" [attr.width]="width" [attr.height]="height">
+    <svg class="svg-path-container" [attr.width]="width" [attr.height]="height">
       <path [attr.d]="envelope.path" stroke="black" fill="transparent"></path>
     </svg>
   </div>
   <div class="circle-container">
-    <!--    <svg [attr.width]="width" [attr.height]="height" (mousemove)="debug($event)">-->
-    <svg [attr.width]="width" [attr.height]="height">
+    <div *ngFor="let handle of envelope.handles" [class]="handle.dragBoundaryClass">
+      <div cdkDrag
+           [class]="handle.cssClass"
+           [style.left]="handle.initXcss"
+           [style.top]="handle.initYcss"
+           (cdkDragMoved)="update($event, handle)"
+           [cdkDragLockAxis]="handle.lockAxis"
+           [cdkDragBoundary]="handle.dragBoundary">
+      </div>
+    </div>
+    <svg class="svg-handle-line-container" [attr.width]="width" [attr.height]="height">
       <g class="handle-container" *ngFor="let handle of envelope.handles">
         <rect [attr.x]="handle.rectX"
               [attr.height]="height"
@@ -19,15 +23,6 @@
               [attr.pointer-events]="'none'"
               [attr.fill-opacity]="0">
         </rect>
-        <circle cdkDrag
-                (cdkDragMoved)="update($event, handle)"
-                [attr.cx]="handle.initX"
-                [attr.cy]="handle.initY"
-                [attr.r]="handle.radius"
-                [attr.fill]="handle.fill"
-                [cdkDragLockAxis]="handle.lockAxis"
-                [cdkDragBoundary]="handle.dragBoundary">
-        </circle>
         <line *ngFor="let note of notes"
               [attr.x1]="note.xPosition"
               [attr.y1]="0"
@@ -36,14 +31,6 @@
               [attr.stroke]="note.interval.color.backgroundColor"
               [attr.opacity]="note.opacity"
         ></line>
-        <!--      <circle-->
-        <!--              style="pointer-events: none"-->
-        <!--              [attr.cx]="debugX"-->
-        <!--              [attr.cy]="envelope.getH(debugX, 0)"-->
-        <!--              [attr.r]="5"-->
-        <!--              [attr.fill]="'red'"-->
-        <!--      >-->
-        <!--      </circle>-->
       </g>
     </svg>
   </div>

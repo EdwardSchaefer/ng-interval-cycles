@@ -63,22 +63,12 @@ export class EnvelopeComponent implements AfterViewInit {
 class Envelope {
   handles: (VerticalHandle[] | BezierHandle[]) = [];
   height: number;
-  // debugCurveRef: number[] = [];
-  // debugPathRef = '';
   constructor(nodes: number, height: number, offsetRadius: number) {
     this.height = height;
     for (let i = 0; i < nodes; i++) {
       this.handles.push(i % 2 ? new BezierHandle(i, offsetRadius) : new VerticalHandle(i, offsetRadius));
     }
   }
-  // get debugPath(): string {
-  //   let result = 'M 0 100 ';
-  //   this.debugCurveRef.forEach((y, x) => {
-  //     result = result + 'L ' + x + ' ' + (200 - (y * 200)) + ' ';
-  //   });
-  //   this.debugPathRef = result;
-  //   return result;
-  // }
   get path(): string {
     let result = '';
     this.handles.forEach((handle, index) => {
@@ -133,7 +123,6 @@ class Envelope {
         }
       }
     }
-    // this.debugCurveRef = curve;
     return curve;
   }
 }
