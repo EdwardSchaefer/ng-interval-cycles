@@ -2,9 +2,10 @@ import {Component, Input, OnChanges} from '@angular/core';
 import {Temperament} from '../temperament-model';
 import {Interval} from '../interval-model';
 import {SynthService} from '../synth.service';
-import {fromEvent, merge, Observable} from 'rxjs';
+import {from, fromEvent, merge, Observable} from 'rxjs';
 import {filter, map, switchMap, take} from 'rxjs/operators';
 import {Note} from '../note.model';
+import {MidiService} from '../midi.service';
 
 @Component({
   selector: 'nic-matrix',
@@ -24,13 +25,26 @@ export class MatrixComponent implements OnChanges {
     map((key: KeyboardEvent) => this.matrix.find(interval => interval.key === key.key)),
     switchMap((interval: Interval) => this.synth.generateNote(interval))
   );
-  constructor(public synth: SynthService) {
+  constructor(public synth: SynthService, public midi: MidiService) {
     this.keyDown.subscribe(note => {
       const keyup: Observable<KeyboardEvent> = fromEvent(document, 'keyup').pipe(
         filter((key: KeyboardEvent) => key.key === note.interval.key),
         take(1)
       );
       keyup.subscribe(keyUpEvent => note.releaseNote());
+    });
+    this.midi.midiLoaded.subscribe(loaded => {
+      if (loaded) {
+        this.midi.midiDown.subscribe(midiDown => {
+          const interval = this.matrix.find(intervalValue => midiDown % 12 === intervalValue.value);
+          const note = this.synth.generateNote(interval);
+          const midiUp: Observable<any> = from(this.midi.midiUp).pipe(
+            filter((intervalValue: number) => intervalValue === midiDown),
+            take(1)
+          );
+          note.subscribe(noteRef => midiUp.subscribe(a => noteRef.releaseNote()));
+        });
+      }
     });
   }
   ngOnChanges() {
