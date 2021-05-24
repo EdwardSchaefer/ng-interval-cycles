@@ -36,7 +36,8 @@ export class MatrixComponent implements OnChanges {
     this.midi.midiLoaded.subscribe(loaded => {
       if (loaded) {
         this.midi.midiDown.subscribe(midiDown => {
-          const interval = this.matrix.find(intervalValue => midiDown % 12 === intervalValue.value);
+          const temperament = this.matrix[0].temperament;
+          const interval = this.matrix.find(intervalValue => midiDown % temperament === intervalValue.value);
           const note = this.synth.generateNote(interval);
           const midiUp: Observable<any> = from(this.midi.midiUp).pipe(
             filter((intervalValue: number) => intervalValue === midiDown),
