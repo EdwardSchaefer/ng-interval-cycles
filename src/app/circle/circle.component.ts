@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {SynthService} from '../synth.service';
 import {Radius} from '../radius-model';
 
@@ -7,7 +7,7 @@ import {Radius} from '../radius-model';
   templateUrl: './circle.component.html',
   styleUrls: ['./circle.component.css']
 })
-export class CircleComponent implements AfterViewInit {
+export class CircleComponent {
   @ViewChild('svgElement', {static: true}) svgElement: ElementRef;
   radiusLines: Radius[] = [];
   size = 300;
@@ -23,17 +23,5 @@ export class CircleComponent implements AfterViewInit {
         }
       });
     });
-  }
-  ngAfterViewInit(): void {
-    this.draw();
-  }
-  draw() {
-    const timesReducer = (acc, curr) => Math.abs(curr - 128) > acc ? Math.abs(curr - 128) : acc;
-    this.radiusLines.forEach(line => {
-      const times = new Uint8Array(line.noteAnalyser.frequencyBinCount);
-      line.noteAnalyser.getByteTimeDomainData(times);
-      line.opacity = times.reduce(timesReducer, 0) / 128;
-    });
-    requestAnimationFrame(this.draw.bind(this));
   }
 }

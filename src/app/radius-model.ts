@@ -1,5 +1,4 @@
-import {Interval} from './interval-model';
-import {Note} from "./note.model";
+import {Note} from './note.model';
 
 export class Radius {
   x1: number;
@@ -8,9 +7,9 @@ export class Radius {
   y2: number;
   offset = 90;
   stroke: string;
-  opacity = 100;
-  noteAnalyser;
+  note: Note;
   constructor(note: Note, radius: number) {
+    this.note = note;
     const degrees = ((note.interval.value / note.interval.temperament) * 360) - this.offset;
     const radians = (degrees * Math.PI / 180);
     this.x1 = radius;
@@ -18,6 +17,5 @@ export class Radius {
     this.x2 = (radius * Math.cos(radians)) + radius;
     this.y2 = (radius * Math.sin(radians)) + radius;
     this.stroke = note.interval.color.backgroundColor;
-    this.noteAnalyser = note.noteAnalyser;
   }
 }
