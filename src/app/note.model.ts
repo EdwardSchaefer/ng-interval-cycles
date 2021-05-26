@@ -1,5 +1,5 @@
 import {Interval} from './interval-model';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
 
 export class Note {
   osc: OscillatorNode;
@@ -13,6 +13,7 @@ export class Note {
   key: string;
   noteAnalyser;
   stopped: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  stoppedBoolean: boolean;
   opacity: number;
   xPosition: number;
   xOffset = 10;
@@ -28,6 +29,7 @@ export class Note {
     this.noteAnalyser = this.context.createAnalyser();
     this.gain.connect(this.noteAnalyser);
     this.play(noteData.curve);
+    this.draw();
   }
   play(curve: number[][]) {
     const preSustainCurve = [...curve[0], ...curve[1]];
@@ -67,6 +69,21 @@ export class Note {
     this.osc.stop();
     this.osc.disconnect();
     this.stopped.next(true);
+    this.stoppedBoolean = true;
+  }
+  draw() {
+    if (!this.stoppedBoolean) {
+      const timesReducer = (acc, curr) => Math.abs(curr - 128) > acc ? Math.abs(curr - 128) : acc;
+      const times = new Uint8Array(this.noteAnalyser.frequencyBinCount);
+      this.noteAnalyser.getByteTimeDomainData(times);
+      this.opacity = times.reduce(timesReducer, 0) / 128;
+      if (!this.sustained) {
+        this.xPosition = -1000 * (this.startTime - this.context.currentTime) + this.xOffset;
+      } else {
+        this.xPosition = this.xOffset + 400;
+      }
+      requestAnimationFrame(this.draw.bind(this));
+    }
   }
 }
 

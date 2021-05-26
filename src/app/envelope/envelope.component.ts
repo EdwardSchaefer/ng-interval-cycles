@@ -1,4 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {Component} from '@angular/core';
 import {SynthService} from '../synth.service';
 import {Vector} from '../vector-model';
 import {VerticalHandle, BezierHandle} from '../handle-model';
@@ -9,7 +9,7 @@ import {Note} from '../note.model';
   templateUrl: './envelope.component.html',
   styleUrls: ['./envelope.component.css']
 })
-export class EnvelopeComponent implements AfterViewInit {
+export class EnvelopeComponent {
   envelope: Envelope;
   nodeCount = 7;
   offsetRadius = 10;
@@ -29,23 +29,6 @@ export class EnvelopeComponent implements AfterViewInit {
         }
       });
     });
-  }
-  ngAfterViewInit(): void {
-    this.draw();
-  }
-  draw() {
-    const timesReducer = (acc, curr) => Math.abs(curr - 128) > acc ? Math.abs(curr - 128) : acc;
-    this.notes.forEach(note => {
-      const times = new Uint8Array(note.noteAnalyser.frequencyBinCount);
-      note.noteAnalyser.getByteTimeDomainData(times);
-      note.opacity = times.reduce(timesReducer, 0) / 128;
-      if (!note.sustained) {
-        note.xPosition = -1000 * (note.startTime - note.context.currentTime) + note.xOffset;
-      } else {
-        note.xPosition = note.xOffset + 400;
-      }
-    });
-    requestAnimationFrame(this.draw.bind(this));
   }
   update(event, handle: (VerticalHandle | BezierHandle)) {
     const transform: string = event.source.element.nativeElement.style.transform;
