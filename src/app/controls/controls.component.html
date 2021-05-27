@@ -6,4 +6,11 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+  <mat-form-field>
+    <mat-select [value]="synth.oscType" (selectionChange)="oscChange($event)">
+      <mat-option *ngFor="let osc of oscTypes" [value]="osc">
+        {{osc}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>

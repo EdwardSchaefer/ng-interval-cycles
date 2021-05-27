@@ -14,6 +14,7 @@ export class SynthService {
   analyser: AnalyserNode;
   note: Subject<Note> = new Subject<Note>();
   curve: BehaviorSubject<number[][]> = new BehaviorSubject<number[][]>([]);
+  oscType: OscillatorType = 'sine';
   constructor() {}
   initialize() {
     this.context = new AudioContext();
@@ -26,6 +27,7 @@ export class SynthService {
       this.initialize();
     }
     const osc: OscillatorNode = this.context.createOscillator();
+    osc.type = this.oscType;
     const gain: GainNode = this.context.createGain();
     const curve = this.curve.getValue();
     const context = this.context;

@@ -12,6 +12,7 @@ export class ControlsComponent implements OnInit {
   max = 24;
   temps: Temperament[] = [];
   selectedTemp: Temperament;
+  oscTypes: OscillatorType[] = ['sine', 'square', 'sawtooth', 'triangle'];
   constructor(public synth: SynthService) {
     for (let i = this.min; i <= this.max; i++) {
       this.temps.push(new Temperament(i));
@@ -23,5 +24,8 @@ export class ControlsComponent implements OnInit {
   }
   selectionChange(event) {
     this.synth.selectedTemp.next(event.value);
+  }
+  oscChange(event) {
+    this.synth.oscType = event.value;
   }
 }

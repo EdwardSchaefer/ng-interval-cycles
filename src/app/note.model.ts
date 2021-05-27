@@ -22,7 +22,6 @@ export class Note {
     this.osc = noteData.osc;
     this.gain = noteData.gain;
     this.context = noteData.context;
-    this.osc.type = 'sine';
     this.osc.frequency.value = this.interval.frequency;
     this.gain.gain.value = 0.5;
     this.osc.connect(this.gain);
