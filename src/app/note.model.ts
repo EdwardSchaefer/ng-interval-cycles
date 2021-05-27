@@ -1,5 +1,5 @@
 import {Interval} from './interval-model';
-import {BehaviorSubject, Subject} from 'rxjs';
+import {BehaviorSubject} from 'rxjs';
 
 export class Note {
   osc: OscillatorNode;

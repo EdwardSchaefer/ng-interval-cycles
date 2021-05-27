@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import {Interval} from './interval-model';
 import {BehaviorSubject, Observable, of, Subject} from 'rxjs';
 import {Note} from './note.model';
+import {Temperament} from './temperament-model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SynthService {
   initialized: boolean;
+  selectedTemp: Subject<Temperament> = new Subject<Temperament>();
   context: AudioContext;
   analyser: AnalyserNode;
   note: Subject<Note> = new Subject<Note>();

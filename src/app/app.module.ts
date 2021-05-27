@@ -9,6 +9,7 @@ import { WaveformComponent } from './waveform/waveform.component';
 import { CircleComponent } from './circle/circle.component';
 import { EnvelopeComponent } from './envelope/envelope.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import {ControlsComponent} from "./controls/controls.component";
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     MatrixComponent,
     WaveformComponent,
     CircleComponent,
-    EnvelopeComponent
+    EnvelopeComponent,
+    ControlsComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,9 @@
+<div>
+  <mat-form-field>
+    <mat-select [value]="selectedTemp" (selectionChange)="selectionChange($event)">
+      <mat-option *ngFor="let temp of temps" [value]="temp">
+        {{temp?.label}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>

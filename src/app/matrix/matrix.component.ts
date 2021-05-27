@@ -1,5 +1,4 @@
 import {Component, Input, OnChanges} from '@angular/core';
-import {Temperament} from '../temperament-model';
 import {Interval} from '../interval-model';
 import {SynthService} from '../synth.service';
 import {from, fromEvent, merge, Observable} from 'rxjs';
@@ -13,7 +12,6 @@ import {MidiService} from '../midi.service';
   styleUrls: ['./matrix.component.css']
 })
 export class MatrixComponent implements OnChanges {
-  @Input() temperament: Temperament;
   // no longer a matrix
   matrix: Interval[] = [];
   matrixContainer: {maxWidth: string, maxHeight: string};
@@ -26,6 +24,18 @@ export class MatrixComponent implements OnChanges {
     switchMap((interval: Interval) => this.synth.generateNote(interval))
   );
   constructor(public synth: SynthService, public midi: MidiService) {
+    this.synth.selectedTemp.subscribe(temperament => {
+      this.matrix = [];
+      const styleValue = (50 * (temperament.value + 1)) + 'px';
+      this.matrixContainer = {maxWidth: styleValue, maxHeight: styleValue};
+      this.validKeys = this.defaultKeys.slice(0, temperament.value);
+      for (let i = 0; i <= temperament.value; i++) {
+        for (let j = 0; j <= temperament.value; j++) {
+          const value = (i * j) % temperament.value;
+          this.matrix.push(new Interval(temperament.value, value, this.validKeys[value]));
+        }
+      }
+    });
     this.keyDown.subscribe(note => {
       const keyup: Observable<KeyboardEvent> = fromEvent(document, 'keyup').pipe(
         filter((key: KeyboardEvent) => key.key === note.interval.key),
@@ -49,16 +59,7 @@ export class MatrixComponent implements OnChanges {
     });
   }
   ngOnChanges() {
-    this.matrix = [];
-    const styleValue = (50 * (this.temperament.value + 1)) + 'px';
-    this.matrixContainer = {maxWidth: styleValue, maxHeight: styleValue};
-    this.validKeys = this.defaultKeys.slice(0, this.temperament.value);
-    for (let i = 0; i <= this.temperament.value; i++) {
-      for (let j = 0; j <= this.temperament.value; j++) {
-        const value = (i * j) % this.temperament.value;
-        this.matrix.push(new Interval(this.temperament.value, value, this.validKeys[value]));
-      }
-    }
+
   }
   clickPlay(event, interval: Interval) {
     const noteObs = this.synth.generateNote(interval);

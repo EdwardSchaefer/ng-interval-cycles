@@ -1,14 +1,8 @@
 <div>
-  <mat-form-field>
-    <mat-select [(value)]="selectedTemp">
-      <mat-option *ngFor="let temp of temps" [value]="temp">
-        {{temp?.label}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+  <nic-controls></nic-controls>
 </div>
 <div class="component-container">
-  <nic-matrix [temperament]="selectedTemp"></nic-matrix>
+  <nic-matrix></nic-matrix>
 </div>
 <div class="component-container">
   <nic-circle></nic-circle>
