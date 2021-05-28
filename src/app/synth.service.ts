@@ -10,11 +10,13 @@ import {Temperament} from './temperament-model';
 export class SynthService {
   initialized: boolean;
   selectedTemp: Subject<Temperament> = new Subject<Temperament>();
+  selectedMatrixDisplay: Subject<'key' | 'value'> = new Subject<'key' | 'value'>();
   context: AudioContext;
   analyser: AnalyserNode;
   note: Subject<Note> = new Subject<Note>();
   curve: BehaviorSubject<number[][]> = new BehaviorSubject<number[][]>([]);
   oscType: OscillatorType = 'sine';
+  circleType = 'slice';
   constructor() {}
   initialize() {
     this.context = new AudioContext();

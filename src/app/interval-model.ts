@@ -9,6 +9,7 @@ export class Interval {
     width: '',
     height: ''
   };
+  none = '';
   constructor(temperament: number, value: number, key: string) {
     this.value = value;
     this.temperament = temperament;

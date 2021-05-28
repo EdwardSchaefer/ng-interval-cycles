@@ -11,9 +11,10 @@ import {MidiService} from '../midi.service';
   templateUrl: './matrix.component.html',
   styleUrls: ['./matrix.component.css']
 })
-export class MatrixComponent implements OnChanges {
+export class MatrixComponent {
   // no longer a matrix
   matrix: Interval[] = [];
+  selectedMatrixDisplay: 'key' | 'value';
   matrixContainer: {maxWidth: string, maxHeight: string};
   defaultKeys: string[] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'q', 'w', 'e', 'r', 't', 'y', 'u',
     'i', 'o', 'p', 'a', 's', 'd', 'f'];
@@ -24,6 +25,7 @@ export class MatrixComponent implements OnChanges {
     switchMap((interval: Interval) => this.synth.generateNote(interval))
   );
   constructor(public synth: SynthService, public midi: MidiService) {
+    this.synth.selectedMatrixDisplay.subscribe(display => this.selectedMatrixDisplay = display);
     this.synth.selectedTemp.subscribe(temperament => {
       this.matrix = [];
       const styleValue = (50 * (temperament.value + 1)) + 'px';
@@ -57,9 +59,6 @@ export class MatrixComponent implements OnChanges {
         });
       }
     });
-  }
-  ngOnChanges() {
-
   }
   clickPlay(event, interval: Interval) {
     const noteObs = this.synth.generateNote(interval);

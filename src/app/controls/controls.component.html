@@ -13,4 +13,18 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+  <mat-form-field>
+    <mat-select [value]="synth.circleType" (selectionChange)="circleChange($event)">
+      <mat-option *ngFor="let type of circleTypes" [value]="type">
+        {{type}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-select [value]="selectedMatrixDisplay" (selectionChange)="matrixDisplayChange($event)">
+      <mat-option *ngFor="let display of matrixDisplays" [value]="display">
+        {{display}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>

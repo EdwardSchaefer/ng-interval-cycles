@@ -15,7 +15,7 @@ export class CircleComponent {
   strokeWidth = 1;
   constructor(public synth: SynthService) {
     this.synth.note.subscribe(note => {
-      const radiusLine = new Radius(note, this.radius);
+      const radiusLine = new Radius(note, this.radius, this.synth.circleType);
       this.radiusLines.push(radiusLine);
       note.stopped.subscribe(stopped => {
         if (stopped) {
