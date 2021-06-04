@@ -1,7 +1,7 @@
 import {Component, Input, OnChanges} from '@angular/core';
 import {Interval} from '../interval-model';
 import {SynthService} from '../synth.service';
-import {from, fromEvent, merge, Observable} from 'rxjs';
+import {from, fromEvent, merge, Observable, Subscription} from 'rxjs';
 import {filter, map, switchMap, take} from 'rxjs/operators';
 import {Note} from '../note.model';
 import {MidiService} from '../midi.service';
@@ -24,6 +24,7 @@ export class MatrixComponent {
     map((key: KeyboardEvent) => this.matrix.find(interval => interval.key === key.key)),
     switchMap((interval: Interval) => this.synth.generateNote(interval))
   );
+  midiSub: Subscription;
   constructor(public synth: SynthService, public midi: MidiService) {
     this.synth.selectedMatrixDisplay.subscribe(display => this.selectedMatrixDisplay = display);
     this.synth.selectedTemp.subscribe(temperament => {
@@ -47,7 +48,8 @@ export class MatrixComponent {
     });
     this.midi.midiLoaded.subscribe(loaded => {
       if (loaded) {
-        this.midi.midiDown.subscribe(midiDown => {
+        // unsubscribe ?
+        this.midiSub = this.midi.midiDown.subscribe(midiDown => {
           const temperament = this.matrix[0].temperament;
           const interval = this.matrix.find(intervalValue => midiDown % temperament === intervalValue.value);
           const note = this.synth.generateNote(interval);

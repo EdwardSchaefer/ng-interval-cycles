@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Temperament} from '../temperament-model';
 import {SynthService} from '../synth.service';
+import {MidiService} from '../midi.service';
 
 @Component({
   selector: 'nic-controls',
@@ -16,7 +17,7 @@ export class ControlsComponent implements OnInit {
   oscTypes: OscillatorType[] = ['sine', 'square', 'sawtooth', 'triangle'];
   circleTypes: string[] = ['radius', 'chord', 'slice'];
   matrixDisplays = ['value', 'key', 'none'];
-  constructor(public synth: SynthService) {
+  constructor(public synth: SynthService, public midi: MidiService) {
     for (let i = this.min; i <= this.max; i++) {
       this.temps.push(new Temperament(i));
     }

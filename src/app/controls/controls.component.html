@@ -27,4 +27,12 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+  <div class="midi-input">
+    <div>{{midi.midiInput?.manufacturer}}</div>
+    <div>{{midi.midiInput?.name}}</div>
+  </div>
+  <div class="midi-input">
+    <mat-checkbox disabled [(ngModel)]="midi.midiMap[0]">keydown</mat-checkbox>
+    <mat-checkbox disabled [(ngModel)]="midi.midiMap[1]">keyup</mat-checkbox>
+  </div>
 </div>
