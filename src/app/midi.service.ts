@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {SynthService} from './synth.service';
-import {BehaviorSubject, from, Observable, of, Subject} from 'rxjs';
+import {BehaviorSubject, from, Observable, Subject} from 'rxjs';
 import {filter, map} from 'rxjs/operators';
 
 @Injectable({
@@ -12,8 +12,8 @@ export class MidiService {
   inputs;
   midiInput;
   subject: Subject<any> = new Subject<any>();
-  midiUp: Observable<any> = from(this.subject).pipe(filter(midi => midi.data[0] === 128), map(midi => midi.data[1]));
-  midiDown: Observable<any> = from(this.subject).pipe(filter(midi => midi.data[0] === 144), map(midi => midi.data[1]));
+  midiUp: Observable<any>;
+  midiDown: Observable<any>;
   midiMap: number[] = [];
   midiLoaded: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   constructor(public synth: SynthService) {
@@ -24,7 +24,6 @@ export class MidiService {
           this.mapMIDI(this.MIDIAccess.inputs);
         } else {
           this.MIDIAccess.onstatechange = change => {
-            // console.log(change);
             if (change.port.type === 'input' && change.port.connection === 'closed') {
               this.mapMIDI(change.target.inputs);
             }
@@ -32,25 +31,30 @@ export class MidiService {
         }
       });
     }
-    this.subject.subscribe(a => {
-      // console.log(a.data);
-      // if (a.data[0] === 144) {
-        // console.log('sub', a.data);
-      // }
-    });
   }
   mapMIDI(inputs) {
     inputs.forEach(input => {
       this.midiInput = input;
-      this.midiInput.onmidimessage = message => this.onMidiMessage(message);
-      this.midiLoaded.next(true);
+      this.midiInput.onmidimessage = message => this.midiMap.length < 2 ? this.initMidi(message) : this.subject.next(message.data);
     });
   }
-  onMidiMessage(message) {
-    if (this.midiMap.length < 2) {
-      this.midiMap.push(message.data[0]);
-    } else {
-      // this.subject.next(message);
+  initMidi(message) {
+    this.midiMap.push(message.data);
+    let upfilter;
+    let downfilter;
+    if (this.midiMap.length === 2) {
+      upfilter = this.midiMap[1] === 0 ? midiManUpFilter : akaiUpFilter;
+      downfilter = this.midiMap[1] === 0 ? midiManDownFilter : akaiDownFilter;
+    }
+    this.midiUp = from(this.subject).pipe(filter(upfilter), map(midi => midi[1]));
+    this.midiDown = from(this.subject).pipe(filter(downfilter), map(midi => midi[1]));
+    if (this.midiMap.length === 2) {
+      this.midiLoaded.next(true);
     }
   }
 }
+
+const midiManUpFilter = (data: number[]) => (data[0] === 159 && !data[2]);
+const midiManDownFilter = (data: number[]) => (data[0] === 159 && !!data[2]);
+const akaiUpFilter = (data: number[]) => (data[0] === 128);
+const akaiDownFilter = (data: number[]) => (data[0] === 144);
