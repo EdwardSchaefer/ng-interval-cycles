@@ -1,6 +1,6 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {SynthService} from '../synth.service';
-import {Radius} from '../radius-model';
+import {Radius} from '../data-models/radius-model';
 
 @Component({
   selector: 'nic-circle',

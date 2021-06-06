@@ -1,9 +1,9 @@
 import {Component, Input, OnChanges} from '@angular/core';
-import {Interval} from '../interval-model';
+import {Interval} from '../data-models/interval-model';
 import {SynthService} from '../synth.service';
 import {from, fromEvent, merge, Observable, Subscription} from 'rxjs';
 import {filter, map, switchMap, take} from 'rxjs/operators';
-import {Note} from '../note.model';
+import {Note} from '../data-models/note.model';
 import {MidiService} from '../midi.service';
 
 @Component({

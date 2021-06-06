@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Temperament} from '../temperament-model';
+import {Temperament} from '../data-models/temperament-model';
 import {SynthService} from '../synth.service';
 import {MidiService} from '../midi.service';
 

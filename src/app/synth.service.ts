@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import {Interval} from './interval-model';
+import {Interval} from './data-models/interval-model';
 import {BehaviorSubject, Observable, of, Subject} from 'rxjs';
-import {Note} from './note.model';
-import {Temperament} from './temperament-model';
+import {Note} from './data-models/note.model';
+import {Temperament} from './data-models/temperament-model';
 
 @Injectable({
   providedIn: 'root'
