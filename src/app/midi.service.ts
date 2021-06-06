@@ -31,6 +31,7 @@ export class MidiService {
         }
       });
     }
+    this.subject.subscribe(a => console.log(a));
   }
   mapMIDI(inputs) {
     inputs.forEach(input => {
@@ -43,8 +44,8 @@ export class MidiService {
     let upfilter;
     let downfilter;
     if (this.midiMap.length === 2) {
-      upfilter = this.midiMap[1] === 0 ? midiManUpFilter : akaiUpFilter;
-      downfilter = this.midiMap[1] === 0 ? midiManDownFilter : akaiDownFilter;
+      upfilter = this.midiMap[1][2] === 0 ? midiManUpFilter : akaiUpFilter;
+      downfilter = this.midiMap[1][2] === 0 ? midiManDownFilter : akaiDownFilter;
     }
     this.midiUp = from(this.subject).pipe(filter(upfilter), map(midi => midi[1]));
     this.midiDown = from(this.subject).pipe(filter(downfilter), map(midi => midi[1]));
