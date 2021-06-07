@@ -31,7 +31,6 @@ export class MidiService {
         }
       });
     }
-    this.subject.subscribe(a => console.log(a));
   }
   mapMIDI(inputs) {
     inputs.forEach(input => {
