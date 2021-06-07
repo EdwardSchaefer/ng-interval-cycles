@@ -6,12 +6,19 @@ NgIntervalCycles is a web application used to explore equal temperaments in the 
 
 ## Deployment
 
+
+The application can be deployed on GH pages with [angular-cli-ghpages
+](https://www.npmjs.com/package/angular-cli-ghpages). There is an [issue](https://stackoverflow.com/questions/59341718/not-allowed-to-load-local-resource-error-on-chrome-angular-app-is-not-running) where angular-cli-ghpages will not work with Git Bash, so use another CLI such as CMD. Clone the repository, install the dependencies and run this command:
+
+`ng deploy --base-href=/ng-interval-cycles/`
+
+###### Current Deployment
 https://edwardschaefer.github.io/ng-interval-cycles/
 
 ## MIDI Support
 
 This application supports MIDI input devices (such as keyboards) which interact directly with the browser. This feature is currently only supported on Chrome. The following devices have been tested and are supported:
-- M-Audo Keystation 49es
+- M-Audio Keystation 49es
 - Akai LPK25
 
 # Components
