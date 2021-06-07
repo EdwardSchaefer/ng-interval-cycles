@@ -1,28 +1,27 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {SynthService} from '../synth.service';
-import {Radius} from '../radius-model';
+import {Radius} from '../data-models/radius-model';
 
 @Component({
   selector: 'nic-circle',
   templateUrl: './circle.component.html',
   styleUrls: ['./circle.component.css']
 })
-export class CircleComponent implements AfterViewInit {
+export class CircleComponent {
   @ViewChild('svgElement', {static: true}) svgElement: ElementRef;
-  radiusLine: Radius;
-  size = 400;
+  radiusLines: Radius[] = [];
+  size = 300;
   radius = this.size / 2;
   strokeWidth = 1;
   constructor(public synth: SynthService) {
-    this.synth.interval.subscribe(interval => {
-      if (interval) {
-        this.radiusLine = new Radius(interval, this.radius);
-      } else {
-        this.radiusLine = null;
-      }
+    this.synth.note.subscribe(note => {
+      const radiusLine = new Radius(note, this.radius, this.synth.circleType);
+      this.radiusLines.push(radiusLine);
+      note.stopped.subscribe(stopped => {
+        if (stopped) {
+          this.radiusLines = this.radiusLines.filter(line => line !== radiusLine);
+        }
+      });
     });
-  }
-  ngAfterViewInit(): void {
-
   }
 }

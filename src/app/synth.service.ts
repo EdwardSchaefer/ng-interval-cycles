@@ -1,41 +1,41 @@
 import { Injectable } from '@angular/core';
-import {Interval} from './interval-model';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
-import {OscGainController} from './osc-gain-controller.model';
-import {Vector} from './vector-model';
+import {Interval} from './data-models/interval-model';
+import {BehaviorSubject, Observable, of, Subject} from 'rxjs';
+import {Note} from './data-models/note.model';
+import {Temperament} from './data-models/temperament-model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SynthService {
   initialized: boolean;
+  selectedTemp: Subject<Temperament> = new Subject<Temperament>();
+  selectedMatrixDisplay: Subject<'key' | 'value'> = new Subject<'key' | 'value'>();
   context: AudioContext;
-  contextTiming: Observable<number>;
   analyser: AnalyserNode;
-  interval: Subject<Interval> = new Subject<Interval | null>();
-  curve: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
-  constructor() {
-    // this.curve.subscribe(a => {
-    //   console.log(a);
-    // });
-  }
+  note: Subject<Note> = new Subject<Note>();
+  curve: BehaviorSubject<number[][]> = new BehaviorSubject<number[][]>([]);
+  oscType: OscillatorType = 'sine';
+  circleType = 'slice';
+  constructor() {}
   initialize() {
     this.context = new AudioContext();
-    this.contextTiming = new Observable();
     this.analyser = this.context.createAnalyser();
     this.analyser.connect(this.context.destination);
     this.initialized = true;
   }
-  play(interval: Interval): OscGainController {
+  generateNote(interval: Interval): Observable<Note> {
     if (!this.initialized) {
       this.initialize();
     }
-    this.interval.next(interval);
     const osc: OscillatorNode = this.context.createOscillator();
+    osc.type = this.oscType;
     const gain: GainNode = this.context.createGain();
-    const oscGain = new OscGainController(osc, gain, interval, this.curve.getValue(), this.context);
-    oscGain.gain.connect(this.analyser);
-    return oscGain;
+    const curve = this.curve.getValue();
+    const context = this.context;
+    const note = new Note({osc, gain, interval, curve, context});
+    note.noteAnalyser.connect(this.analyser);
+    this.note.next(note);
+    return of(note);
   }
-
 }

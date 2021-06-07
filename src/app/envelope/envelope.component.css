@@ -1,12 +1,61 @@
-.svg-container {
+.envelope-container {
+  width: 100%;
+  height: 200px;
+}
+.svg-path-container {
   display: inline-block;
+}
+.svg-handle-line-container {
+  position: relative;
+  bottom: 205px;
+  z-index: -1;
 }
 .path-container {
   display: inline-block;
-  position: relative;
+  position: absolute;
+  height: 200px;
 }
 .circle-container {
   display: inline-block;
   position: relative;
-  left: -620px;
+  width: 620px;
+  height: 200px;
+}
+.handle-container {
+  display: inline-block;
+  position: relative;
+  height: 200px;
+  width: 85%;
+}
+.vertical-container {
+  display: inline-block;
+  width: 0;
+}
+.vertical-handle {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background-color: #000000;
+  display: inline-block;
+  position: relative;
+}
+.bezier-handle {
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: #000000;
+  display: inline-block;
+  position: relative;
+}
+.bezier-container {
+  display: inline-block;
+  position: relative;
+  bottom: 5px;
+  left: 10px;
+  height: 200px;
+  width: 200px;
+  pointer-events: none;
+}
+.bezier-container > div {
+  pointer-events: all;
 }

@@ -5,15 +5,33 @@
     [attr.cy]="radius"
     [attr.r]="radius"
     [attr.stroke]="'black'"
-    [attr.stokeWidth]="strokeWidth"
+    [attr.strokeWidth]="strokeWidth"
     [attr.fill]="'white'"
     ></circle>
-    <line *ngIf="radiusLine"
-      [attr.x1]="radiusLine.x1"
-      [attr.y1]="radiusLine.y1"
-      [attr.x2]="radiusLine.x2"
-      [attr.y2]="radiusLine.y2"
-      style="stroke: rgb(0, 0, 0); stroke-width: 1"
-    ></line>
+    <ng-container *ngIf="synth.circleType !== 'slice'">
+      <line *ngFor="let line of radiusLines"
+            [attr.x1]="line.x1"
+            [attr.y1]="line.y1"
+            [attr.x2]="line.x2"
+            [attr.y2]="line.y2"
+            [attr.stroke]="line.stroke"
+            [attr.opacity]="line.note.opacity"
+      ></line>
+    </ng-container>
+    <ng-container *ngIf="synth.circleType === 'slice'">
+      <circle *ngFor="let line of radiusLines"
+              [attr.cx]="radius"
+              [attr.cy]="radius"
+              [attr.r]="radius / 2"
+              [attr.stroke]="line.stroke"
+              [attr.fill]="'white'"
+              [attr.fill-opacity]="0"
+              [attr.stroke-width]="radius"
+              [attr.opacity]="line.note.opacity"
+              [attr.transform-origin]="'center'"
+              [attr.transform]="line.transform"
+              [attr.stroke-dasharray]="line.strokeDashArray"
+      ></circle>
+    </ng-container>
   </g>
 </svg>

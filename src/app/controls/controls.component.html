@@ -1,0 +1,39 @@
+<div>
+  <mat-form-field>
+    <mat-select [value]="selectedTemp" (selectionChange)="selectionChange($event)">
+      <mat-option *ngFor="let temp of temps" [value]="temp">
+        {{temp?.label}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-select [value]="synth.oscType" (selectionChange)="oscChange($event)">
+      <mat-option *ngFor="let osc of oscTypes" [value]="osc">
+        {{osc}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-select [value]="synth.circleType" (selectionChange)="circleChange($event)">
+      <mat-option *ngFor="let type of circleTypes" [value]="type">
+        {{type}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-select [value]="selectedMatrixDisplay" (selectionChange)="matrixDisplayChange($event)">
+      <mat-option *ngFor="let display of matrixDisplays" [value]="display">
+        {{display}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div class="midi-input">
+    <div>{{midi.midiInput?.manufacturer}}</div>
+    <div>{{midi.midiInput?.name}}</div>
+  </div>
+  <div class="midi-input">
+    <mat-checkbox disabled [(ngModel)]="midi.midiMap[0]">keydown</mat-checkbox>
+    <mat-checkbox disabled [(ngModel)]="midi.midiMap[1]">keyup</mat-checkbox>
+    <mat-checkbox disabled [(ngModel)]="synth.initialized">Initialized</mat-checkbox>
+  </div>
+</div>
