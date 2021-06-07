@@ -4,6 +4,10 @@
 
 NgIntervalCycles is a web application used to explore equal temperaments in the context of music. It uses the browser's AudioContext as a synthesiser and allows for MIDI inputs.
 
+## Deployment
+
+https://edwardschaefer.github.io/ng-interval-cycles/
+
 # Components
 
 ## MatrixComponent
