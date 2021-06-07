@@ -8,6 +8,12 @@ NgIntervalCycles is a web application used to explore equal temperaments in the 
 
 https://edwardschaefer.github.io/ng-interval-cycles/
 
+## MIDI Support
+
+This application supports MIDI input devices (such as keyboards) which interact directly with the browser. This feature is currently only supported on Chrome. The following devices have been tested and are supported:
+- M-Audo Keystation 49es
+- Akai LPK25
+
 # Components
 
 ## MatrixComponent
